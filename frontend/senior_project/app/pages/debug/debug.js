@@ -24,7 +24,7 @@ function Debug() {
         });
     };
     socket.onWebSocketError(function(abc) {
-        console.log('wolf', abc);
+        console.log('an error has occured', abc);
     });
       
     console.log(socket);

@@ -38,6 +38,7 @@ export default class AuthService {
     }
     static logout() {
         sessionStorage.removeItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
+        sessionStorage.removeItem(USER_NAME_TEMP_SESSION_ATTRIBUTE_NAME);
         //side affect, should maybe not have here.
         window.location.href = "/login"
     }

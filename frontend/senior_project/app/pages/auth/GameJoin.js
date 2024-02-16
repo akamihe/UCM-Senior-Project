@@ -30,18 +30,12 @@ function Join() {
                 setError("Error joining game");
             });
     };
-
-    const toYYYYMMDD = (date) => {
-        const month = (date.getMonth() + 1).toString().padStart(2, "0");
-        const day = date.getDate().toString().padStart(2, "0");
-        return `${date.getFullYear()}-${month}-${day}`;
-    }
     
     return (
         <div className="row justify-content-lg-center h-100 p-5">
             <div className="col-lg-5 h-100 d-flex flex-column">
                 <div className="text-center lg-3 mb-4">
-                    <h2>Sign up</h2>
+                    <h2>Join Game</h2>
                 </div>
                 <div
                     className="d-flex flex-column justify-content-center align-items-center col-12"

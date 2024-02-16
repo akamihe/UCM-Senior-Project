@@ -4,7 +4,7 @@ import {Link} from 'react-router-dom';
 import AuthService from '../services/AuthService';
 
 function Options() {
-  if(AuthService.isLoggedIn()) {
+  if(AuthService.isLoggedIn() || AuthService.isGameAuth()) {
     return <>
       <Nav className="flex col-12">
         <Link 
@@ -27,8 +27,9 @@ function Options() {
   else {
     return <>
       <Nav className="me-auto">
-        <Link to ="/join" onClick={() => window.location.href = "/join"} className = "navbar-brand">Sign-up</Link>
-        <Link to ="/login" onClick={() => window.location.href = "/login"} className = "navbar-brand">Login</Link>
+        <Link to ="/join" className = "navbar-brand">Sign-up</Link>
+        <Link to ="/login"  className = "navbar-brand">Login</Link>
+        <Link to ="/game/join"  className = "navbar-brand">Join Game</Link>
       </Nav>
     </>
   }

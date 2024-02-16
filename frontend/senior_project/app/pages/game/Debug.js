@@ -16,9 +16,9 @@ function Debug() {
       return (
         <div>
             <Form>
-                {gameState.code}
+                GameCode: {gameState.code}
                 {gameState.users.map(function(user, i){
-                    return <div key="{i}">{user.username}</div>
+                    return <div key={i}>{user.username}</div>
                 })}
             </Form>
         </div>
