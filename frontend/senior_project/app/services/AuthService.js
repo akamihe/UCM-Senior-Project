@@ -1,4 +1,4 @@
-import ApiCallerService, { USER_NAME_SESSION_ATTRIBUTE_NAME} from "./ApiCallerService";
+import ApiCallerService, { USER_NAME_SESSION_ATTRIBUTE_NAME, USER_NAME_TEMP_SESSION_ATTRIBUTE_NAME} from "./ApiCallerService";
 
 export default class AuthService {
     static login(username, password) {
@@ -7,7 +7,7 @@ export default class AuthService {
             .then(res=> {sessionStorage.setItem(USER_NAME_SESSION_ATTRIBUTE_NAME, JSON.stringify(res))})
             .then(res => {
                 //side affect, should maybe not have here.
-                window.location.href = "/";
+                window.location.href = "/game/setup";
                 return res;
             })
     }
@@ -19,6 +19,23 @@ export default class AuthService {
                 return res;
             })
     }
+    static createGame() {
+        return ApiCallerService.post('gameuser/game/create')
+            .then(res => res.json())
+            .then(res=> {sessionStorage.setItem(USER_NAME_TEMP_SESSION_ATTRIBUTE_NAME, JSON.stringify(res))})
+            .then(res => {
+                return res;
+            })
+    }
+    static authGame(gameCode, username) {
+        console.log(username, gameCode);
+        return ApiCallerService.postNoAuth('gameuser/game/auth', {username: username, code: gameCode})
+            .then(res => res.json())
+            .then(res => {sessionStorage.setItem(USER_NAME_TEMP_SESSION_ATTRIBUTE_NAME, JSON.stringify(res))})
+            .then(res => {
+                return res;
+            })
+    }
     static logout() {
         sessionStorage.removeItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
         //side affect, should maybe not have here.
@@ -26,6 +43,9 @@ export default class AuthService {
     }
     static isLoggedIn() {
         return !!sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME)
+    }
+    static isGameAuth() {
+        return !!sessionStorage.getItem(USER_NAME_TEMP_SESSION_ATTRIBUTE_NAME)
     }
     static testCanAccess() {
         ApiCallerService.post('debug/authcheck');

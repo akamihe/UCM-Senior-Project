@@ -12,12 +12,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/debug");
+        config.enableSimpleBroker("/game/instance");
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/gameinstance").setAllowedOriginPatterns("*");
+        registry.addEndpoint("/game/instance").setAllowedOriginPatterns("*");
     }
 
 }

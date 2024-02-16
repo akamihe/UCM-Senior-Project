@@ -29,6 +29,9 @@ public class GameUserService {
         //TODO heighten security with encryption
         return GameUserRepository.save(GameUser);
     }
+    public GameUser find(int user_id) {
+        return GameUserRepository.findById(user_id).orElseThrow();
+    }
 
     @Transactional
     public GameUser getUserByUsername(String name){

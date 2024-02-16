@@ -7,6 +7,9 @@ import {Container} from 'react-bootstrap';
 import Login from './pages/auth/Login';
 import Join from './pages/auth/Join';
 import Debug from './pages/debug/debug'
+import GameDebug from './pages/game/Debug'
+import SetupGame from './pages/game/SetupGame'
+import GameJoin from './pages/auth/GameJoin'
 import {Route, BrowserRouter, Routes} from 'react-router-dom'
 import AuthService from './services/AuthService';
 
@@ -17,21 +20,26 @@ const inter = Inter({ subsets: ["latin"] });
 
 
 function Authenticated() {
-  if(!AuthService.isLoggedIn()) {
-    return <>
-      <Routes>
-        <Route path="/join" element={<Join />}/>
-        <Route path="*"  element={<Login />}/>
-      </Routes>
-    </>
-  }
-  else {
-   return <>
-   <Routes>
-      <Route path="*"  element={<Debug />}/>
+  return <>
+  <Routes>
+     {AuthService.isGameAuth() &&
+         <>
+           <Route path="/game/debug" element={<GameDebug />}/>
+         </>
+     }
+     {(!AuthService.isLoggedIn() &&
+         <>
+           <Route path="/join" element={<Join />}/>
+           <Route path="/game/join" element={<GameJoin />}/>
+           <Route path="*"  element={<Login />}/>
+         </>
+     ) ||
+         <>
+           <Route path="/game/setup" element={<SetupGame />}/>
+         </>
+     }
    </Routes>
-    </>
-  }
+ </>
 }
 
 export default function App() {

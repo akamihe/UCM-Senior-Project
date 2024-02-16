@@ -1,0 +1,46 @@
+package ucmo.senior_project.domain;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.jsonwebtoken.Jwts;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+
+import java.util.HashMap;
+
+@Data
+@RequiredArgsConstructor
+public class TempUser {
+    private static HashMap<String, TempUser> tempUsers = new HashMap<>();
+
+    @JsonIgnore
+    private SuperGame instance;
+    private Integer sourceUser = null;
+    private String username;
+    private String code;
+    private String gameCode;
+
+    public TempUser(SuperGame instance, String username, String gameCode) {
+        this.instance = instance;
+        this.username = username;
+        this.gameCode = gameCode;
+        this.code = createCode(instance.getCode());
+        tempUsers.put(this.code, this);
+    }
+    public TempUser(SuperGame instance, GameUser user, String gameCode) {
+        this.instance = instance;
+        this.sourceUser = user.getUserId();
+        this.username = user.getUsername();
+        this.gameCode = gameCode;
+        this.code = createCode(instance.getCode());
+        tempUsers.put(this.code, this);
+    }
+    public static String createCode(String gameCode) {
+        return Jwts.builder()
+                .setId(gameCode)
+                .setSubject("login")
+                .compact();
+    }
+    public static TempUser fetchTempUser(String code) {
+        return tempUsers.get(code);
+    }
+}

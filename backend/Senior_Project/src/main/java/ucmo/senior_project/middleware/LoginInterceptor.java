@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
+import ucmo.senior_project.domain.TempUser;
 import ucmo.senior_project.service.GameUserService;
 
 @Slf4j
@@ -25,8 +26,13 @@ public class LoginInterceptor implements HandlerInterceptor {
 			return true;
 		}
 
+		String token = request.getHeader("gameToken");
+		if(token != null && TempUser.fetchTempUser(token) != null) {
+			return true;
+		}
+
 		String idString = request.getHeader("userId");
-		String token = request.getHeader("token");
+		token = request.getHeader("token");
 
 		if (idString != null && token != null) {
 			int id = Integer.parseInt(idString);

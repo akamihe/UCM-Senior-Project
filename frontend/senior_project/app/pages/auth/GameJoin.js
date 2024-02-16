@@ -21,15 +21,21 @@ function Join() {
     const submitUser = (e) => {
         e.preventDefault();
         
-        AuthService.createUser(user.username, user.password)
+        AuthService.authGame(user.code, user.username)
             .then(() => {
-                window.location.href = "/game/setup";
+                window.location.href = "/game/debug";
                 setError("");
             })
             .catch(() => {
-                setError("Error creating user, try a different username");
+                setError("Error joining game");
             });
     };
+
+    const toYYYYMMDD = (date) => {
+        const month = (date.getMonth() + 1).toString().padStart(2, "0");
+        const day = date.getDate().toString().padStart(2, "0");
+        return `${date.getFullYear()}-${month}-${day}`;
+    }
     
     return (
         <div className="row justify-content-lg-center h-100 p-5">
@@ -44,6 +50,16 @@ function Join() {
                     (
                         <>
                             <Form className="col-12" onSubmit={submitUser}>
+                                <Form.Group controlId="GameCode" style={{marginBottom: 16}}>
+                                    <Form.Label style={{marginBottom: 4}}>Username</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Enter GameCode"
+                                        onChange={changeValue}
+                                        name="code"
+                                        required
+                                    />
+                                </Form.Group>
                                 <Form.Group controlId="username" style={{marginBottom: 16}}>
                                     <Form.Label style={{marginBottom: 4}}>Username</Form.Label>
                                     <Form.Control
@@ -51,16 +67,6 @@ function Join() {
                                         placeholder="Enter Username"
                                         onChange={changeValue}
                                         name="username"
-                                        required
-                                    />
-                                </Form.Group>
-                                <Form.Group controlId="password">
-                                    <Form.Label style={{marginBottom: 4}}>Password</Form.Label>
-                                    <Form.Control
-                                        type="password"
-                                        placeholder="***********"
-                                        onChange={changeValue}
-                                        name="password"
                                         required
                                     />
                                 </Form.Group>
