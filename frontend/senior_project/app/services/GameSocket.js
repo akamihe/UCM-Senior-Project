@@ -19,14 +19,17 @@ export default class GameSocket {
         this.socket.onConnect = () => {
             this.socket.subscribe("/game/instance/" + this.userCode, function(data) {
                 if(data && data.body) {
-                    _this.gameInstance = JSON.parse(data.body);
-                    if(_this.callable) {
-                        _this.callable(_this.gameInstance);
+                    var data = JSON.parse(data.body);
+                    if(data && data.code) {
+                        _this.gameInstance = data;
+                        if(_this.callable) {
+                            _this.callable(_this.gameInstance);
+                        }
                     }
                 }
             });
             setInterval(function(){
-                _this.sendMessageToServer();
+                _this.sendMessageToServer({});
             }, 1000);
         };
         this.socket.onWebSocketError(function(abc) {

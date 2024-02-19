@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 @Data
 @RequiredArgsConstructor
@@ -35,12 +36,17 @@ public class TempUser {
         tempUsers.put(this.code, this);
     }
     public static String createCode(String gameCode) {
+        UUID u = UUID.randomUUID();
         return Jwts.builder()
-                .setId(gameCode)
+                .setId(gameCode + String.valueOf(u.getLeastSignificantBits()) + String.valueOf(u.getMostSignificantBits()))
                 .setSubject("login")
                 .compact();
     }
     public static TempUser fetchTempUser(String code) {
         return tempUsers.get(code);
+    }
+
+    public int hashCode() {
+        return this.code.hashCode();
     }
 }

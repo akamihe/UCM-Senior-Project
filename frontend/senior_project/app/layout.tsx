@@ -8,6 +8,7 @@ import Login from './pages/auth/Login';
 import Join from './pages/auth/Join';
 import Debug from './pages/debug/debug'
 import GameDebug from './pages/game/Debug'
+import ActiveGame from './pages/game/GameHandler'
 import SetupGame from './pages/game/SetupGame'
 import GameJoin from './pages/auth/GameJoin'
 import {Route, BrowserRouter, Routes} from 'react-router-dom'
@@ -25,6 +26,7 @@ function Authenticated() {
      {AuthService.isGameAuth() &&
          <>
            <Route path="/game/debug" element={<GameDebug />}/>
+           <Route path="/game/active" element={<ActiveGame />}/>
          </>
      }
      {(!AuthService.isLoggedIn() &&

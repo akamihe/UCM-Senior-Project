@@ -1,7 +1,10 @@
 package ucmo.senior_project.domain;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Data;
+import ucmo.senior_project.domain.gametypes.DebugGame;
 
+import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,6 +13,17 @@ import java.util.Random;
 
 @Data
 public class SuperGame {
+    public static Class[] loadableGames = new Class[]
+    {
+        DebugGame.class,
+        DebugGame.class,
+        DebugGame.class,
+        DebugGame.class,
+        DebugGame.class,
+        DebugGame.class,
+        DebugGame.class,
+    };
+
     public static HashMap<String, SuperGame> activeGames = new HashMap<>();
 
     private List<TempUser> users = new ArrayList<>();
@@ -25,7 +39,31 @@ public class SuperGame {
     private Game currentGame = null;
     private String code;
 
+    public void updateInput(TempUser user, JsonNode userInputs) {
+        if (currentGame != null) {
+            currentGame.updateInput(user, userInputs);
+        }
+        JsonNode adminNode = userInputs.get("admin");
+        if(adminNode != null && user == gameMaster) {
+            JsonNode gameState = adminNode.get("state");
+            if(gameState != null) {
+                switch (gameState.asText()) {
+                    case "start":
+                        this.beginNewGame();
+                        break;
+                }
+            }
+        }
+    }
 
+    public void beginNewGame() {
+        int rnd = new Random().nextInt(loadableGames.length);
+        try {
+            this.currentGame = (Game)loadableGames[rnd].getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+    }
     public TempUser newTempUser(String name) {
         TempUser user = new TempUser(this, name, this.code);
         this.users.add(user);

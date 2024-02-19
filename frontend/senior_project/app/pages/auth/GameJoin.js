@@ -23,7 +23,7 @@ function Join() {
         
         AuthService.authGame(user.code, user.username)
             .then(() => {
-                window.location.href = "/game/debug";
+                window.location.href = "/game/active";
                 setError("");
             })
             .catch(() => {
@@ -41,11 +41,10 @@ function Join() {
                     className="d-flex flex-column justify-content-center align-items-center col-12"
                     style={{ flex: 0.8 }}
                 >
-                    (
                         <>
                             <Form className="col-12" onSubmit={submitUser}>
                                 <Form.Group controlId="GameCode" style={{marginBottom: 16}}>
-                                    <Form.Label style={{marginBottom: 4}}>Username</Form.Label>
+                                    <Form.Label style={{marginBottom: 4}}>Enter Gamecode</Form.Label>
                                     <Form.Control
                                         type="text"
                                         placeholder="Enter GameCode"
@@ -72,7 +71,6 @@ function Join() {
                             </Form>
                             <ErrorForm error={error} />
                         </>
-                    )
                 </div>
             </div>
         </div>

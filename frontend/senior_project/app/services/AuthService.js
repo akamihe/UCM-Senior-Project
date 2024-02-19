@@ -43,10 +43,13 @@ export default class AuthService {
         window.location.href = "/login"
     }
     static isLoggedIn() {
-        return !!sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME)
+        return !!sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
     }
     static isGameAuth() {
-        return !!sessionStorage.getItem(USER_NAME_TEMP_SESSION_ATTRIBUTE_NAME)
+        return !!sessionStorage.getItem(USER_NAME_TEMP_SESSION_ATTRIBUTE_NAME);
+    }
+    static getGameAuth() {
+        return sessionStorage.getItem(USER_NAME_TEMP_SESSION_ATTRIBUTE_NAME);
     }
     static testCanAccess() {
         ApiCallerService.post('debug/authcheck');

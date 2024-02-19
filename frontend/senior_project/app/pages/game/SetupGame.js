@@ -18,7 +18,7 @@ function Join() {
         
         AuthService.createGame()
             .then((data) => {
-                window.location.href = "/game/debug";
+                window.location.href = "/game/active";
                 setError("");
             })
             .catch(() => {

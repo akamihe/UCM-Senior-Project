@@ -1,5 +1,6 @@
 package ucmo.senior_project.controllers;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -7,8 +8,7 @@ import ucmo.senior_project.domain.GameUser;
 import ucmo.senior_project.domain.SuperGame;
 import ucmo.senior_project.domain.TempUser;
 import ucmo.senior_project.resource.GameCodeLogin;
-import ucmo.senior_project.resource.GameData;
-import ucmo.senior_project.resource.GameDebugObject;
+import ucmo.senior_project.resource.SuperGameData;
 import ucmo.senior_project.service.GameUserService;
 import ucmo.senior_project.middleware.LoginInterceptor;
 import jakarta.servlet.http.HttpServletRequest;
@@ -80,8 +80,10 @@ public class GameUserController {
 	}
 	@MessageMapping("/game/instance/{code}")
 	@SendTo("/game/instance/{code}")
-	public GameData handleGame(@DestinationVariable String code) throws Exception {
+	public SuperGameData handleGame(@DestinationVariable String code, @RequestBody JsonNode payload) throws Exception {
 		TempUser user = TempUser.fetchTempUser(code);
-		return new GameData(user.getInstance());
+		SuperGame game = user.getInstance();
+		game.updateInput(user, payload);
+		return new SuperGameData(game);
 	}
 }
