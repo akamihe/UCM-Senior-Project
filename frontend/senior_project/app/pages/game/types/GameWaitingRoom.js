@@ -9,10 +9,8 @@ function GameWaitingRoom(data) {
         e.preventDefault();
         _socket.sendMessageToServer({admin:{'state':'start'}})
     }
-    if(AuthService)
-    return (
-
-        <form onSubmit={handleSubmit}>
+    // todo, is game master if(AuthService)
+    return <form onSubmit={handleSubmit}>
             <div>
                 GameCode: {gameState.code}
                 <hr/>
@@ -24,7 +22,6 @@ function GameWaitingRoom(data) {
             <hr/>
             <button type="submit">Begin</button>
         </form>
-    );
 }
 
 export default GameWaitingRoom;

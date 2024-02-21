@@ -36,8 +36,7 @@ function Options() {
 }
 function App() {
      //*!-- FIXME -- to attribute not working, using onclick, please change back to the attribute of to only with proper refresh, #ASK TEACHER!!
-  return (
-    <>
+  return <>
       <Navbar bg="success" variant="dark" id="main-navbar">
         <Container>
           <Options />
@@ -45,7 +44,6 @@ function App() {
       </Navbar>
       <br />
     </>
-  );
 }
 
 export default App;

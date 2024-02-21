@@ -29,13 +29,11 @@ function Debug() {
       
     console.log(socket);
     socket.activate();
-      return (
-        <div>
+      return  <div>
             <Form>
                 {data}
             </Form>
         </div>
-    );
 }
 
 export default Debug;

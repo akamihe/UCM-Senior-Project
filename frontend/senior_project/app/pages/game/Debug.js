@@ -13,8 +13,7 @@ function Debug() {
     if(!gameState.users) {
         return <div></div>
     }
-      return (
-        <div>
+      return <div>
             <Form>
                 GameCode: {gameState.code}
                 {gameState.users.map(function(user, i){
@@ -22,7 +21,6 @@ function Debug() {
                 })}
             </Form>
         </div>
-    );
 }
 
 export default Debug;

@@ -27,8 +27,7 @@ function DebugGame({socket, gameState}) {
         socket.sendMessageToServer({test: e.target.value})
     }
     
-    return (
-        <div className="row justify-content-lg-center h-100 p-5">
+    return <div className="row justify-content-lg-center h-100 p-5">
             <div className="col-lg-5 h-100 d-flex flex-column">
                 <div className="text-center lg-3 mb-4">
                     <h2>User input game test</h2>
@@ -59,7 +58,6 @@ function DebugGame({socket, gameState}) {
                 </div>
             </div>
         </div>
-    );
 }
 
 export default DebugGame;

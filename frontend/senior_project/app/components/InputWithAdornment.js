@@ -16,8 +16,7 @@ const style = {
 }
 
 const InputWithAdornment = ({adornment, adornmentPlacement, ...rest}) => {
-    return (
-        <div
+    return <div
             className="bs-shadow"
             style={{
                 ...style.container,
@@ -34,7 +33,6 @@ const InputWithAdornment = ({adornment, adornmentPlacement, ...rest}) => {
                 }}
             />
         </div>
-    )
 }
 
 export default InputWithAdornment;

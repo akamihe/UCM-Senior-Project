@@ -5,8 +5,7 @@ export const Modal = ({ show, closeCall, formFinish, title, okText, okButtonVari
     //var {show, closeCall, formFinish, title} = props;
     var okTextFinal = okText || "Save";
     var okButtonVariantFinal = okButtonVariant || "primary";
-    return (
-        <ModalExt show={show} onHide={closeCall}>
+    return <ModalExt show={show} onHide={closeCall}>
         <ModalExt.Header closeButton>
           <ModalExt.Title>{title}</ModalExt.Title>
         </ModalExt.Header>
@@ -20,5 +19,4 @@ export const Modal = ({ show, closeCall, formFinish, title, okText, okButtonVari
           </Button>
         </ModalExt.Footer>
       </ModalExt>
-    )
 }
