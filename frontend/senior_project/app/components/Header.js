@@ -30,6 +30,7 @@ function Options() {
         <Link to ="/join" className = "navbar-brand">Sign-up</Link>
         <Link to ="/login"  className = "navbar-brand">Login</Link>
         <Link to ="/game/join"  className = "navbar-brand">Join Game</Link>
+        <Link to ="/waiting-room"  className = "navbar-brand">Waiting Room</Link>
       </Nav>
     </>
   }
@@ -42,7 +43,6 @@ function App() {
           <Options />
         </Container>
       </Navbar>
-      <br />
     </>
 }
 

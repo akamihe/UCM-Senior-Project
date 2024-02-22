@@ -11,6 +11,8 @@ import GameDebug from './pages/game/Debug'
 import ActiveGame from './pages/game/GameHandler'
 import SetupGame from './pages/game/SetupGame'
 import GameJoin from './pages/auth/GameJoin'
+import WaitingRoom from './pages/WaitingRoom'
+import Game from './pages/Game'
 import {Route, BrowserRouter, Routes} from 'react-router-dom'
 import AuthService from './services/AuthService';
 
@@ -33,6 +35,8 @@ function Authenticated() {
          <>
            <Route path="/join" element={<Join />}/>
            <Route path="/game/join" element={<GameJoin />}/>
+           <Route path="/waiting-room" element={<WaitingRoom />} />
+           <Route path="/game" element={<Game />} />
            <Route path="*"  element={<Login />}/>
          </>
      ) ||
@@ -55,7 +59,7 @@ export default function App() {
         <div style={{height: "100vh", display: "flex", flexDirection: "column"}}>
           <BrowserRouter>
             <Header/>
-            <Container style={{flex: 1}}>
+            <Container style={{ padding: 16, flex: 1 }}>
               <Authenticated/>
             </Container>    
           </BrowserRouter>
