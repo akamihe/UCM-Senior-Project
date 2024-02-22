@@ -2,7 +2,7 @@ package ucmo.senior_project.domain;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Data;
-import ucmo.senior_project.domain.gametypes.DebugGame;
+import ucmo.senior_project.domain.gametypes.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
@@ -16,12 +16,10 @@ public class SuperGame {
     public static Class[] loadableGames = new Class[]
     {
         DebugGame.class,
-        DebugGame.class,
-        DebugGame.class,
-        DebugGame.class,
-        DebugGame.class,
-        DebugGame.class,
-        DebugGame.class,
+        //Battleship.class,
+        //HangMan.class,
+        //Sudoku.class,
+        //TicTacToe.class,
     };
 
     public static HashMap<String, SuperGame> activeGames = new HashMap<>();
