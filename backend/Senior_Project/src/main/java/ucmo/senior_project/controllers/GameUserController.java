@@ -84,6 +84,6 @@ public class GameUserController {
 		TempUser user = TempUser.fetchTempUser(code);
 		SuperGame game = user.getInstance();
 		game.updateInput(user, payload);
-		return new SuperGameData(game);
+		return new SuperGameData(game, user);
 	}
 }

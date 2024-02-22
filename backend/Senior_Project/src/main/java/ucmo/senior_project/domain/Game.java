@@ -5,7 +5,7 @@ import ucmo.senior_project.resource.GameData;
 import ucmo.senior_project.resource.gametypes.DebugGameData;
 
 public interface Game {
-    GameData getGameData();
+    GameData getGameData(TempUser user);
     void updateInput(TempUser user, JsonNode data);
     void updateSystem();
 }

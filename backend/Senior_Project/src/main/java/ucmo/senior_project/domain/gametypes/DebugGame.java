@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 public class DebugGame implements Game {
     private HashMap<TempUser, String> userStrings = new HashMap<>();
     @Override
-    public GameData getGameData() {
+    public GameData getGameData(TempUser user) {
         HashMap<String, String> asData = new HashMap<>();
         for (Map.Entry<TempUser, String> entry : userStrings.entrySet()) {
             asData.put(
