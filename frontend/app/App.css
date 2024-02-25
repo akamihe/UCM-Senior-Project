@@ -74,3 +74,7 @@
   width: 668px!important;    /* Occupy the 90% of the screen width */
   max-width: 668px!important;
 } 
+
+p {
+  margin-bottom: 0;
+}

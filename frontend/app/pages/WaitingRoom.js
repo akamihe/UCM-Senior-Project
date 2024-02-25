@@ -58,7 +58,7 @@ const users = [
   { name: "jill_doe" },
 ]
 
-const WaitingRoom = () => {
+export default function WaitingRoom() {
   const navigate = useNavigate();
 
   const code = useMemo(() => Math.floor(Math.random() * 900000) + 100000, [])
@@ -103,5 +103,3 @@ const WaitingRoom = () => {
     </div>
   )
 }
-
-export default WaitingRoom;

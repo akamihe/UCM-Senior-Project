@@ -1,5 +1,5 @@
 {
-  "name": "senior_project",
+  "name": "frontend",
   "version": "0.1.0",
   "private": true,
   "browser": {
@@ -23,6 +23,7 @@
     "react": "^18",
     "react-bootstrap": "^2.10.1",
     "react-dom": "^18",
+    "react-icons": "^5.0.1",
     "react-router-dom": "^6.22.0",
     "react-stomp": "^5.1.0",
     "socket.io": "^4.7.4",

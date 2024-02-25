@@ -50,22 +50,13 @@ function Authenticated() {
 
 export default function App() {
   return (
-    <html lang="en">
-      <head>
-        <title>Senior Project App, Paper game</title>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossOrigin="anonymous"></link>
-      </head>
-      <body className={inter.className}>
-        <div style={{height: "100vh", display: "flex", flexDirection: "column"}}>
-          <BrowserRouter>
-            <Header/>
-            <Container style={{ padding: 16, flex: 1 }}>
-              <Authenticated/>
-            </Container>    
-          </BrowserRouter>
-        </div>
-        </body>
-    </html>
+    <div style={{height: "100vh", display: "flex", flexDirection: "column"}}>
+      <BrowserRouter>
+        <Header/>
+        <Container className={inter.className} style={{ padding: 0, flex: 1, maxWidth: "none", overflow: "hidden" }}>
+          <Authenticated/>
+        </Container>    
+      </BrowserRouter>
+    </div>
   );
 }
-
