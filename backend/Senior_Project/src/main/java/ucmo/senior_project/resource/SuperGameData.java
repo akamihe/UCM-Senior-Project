@@ -15,6 +15,9 @@ public class SuperGameData {
     private String code;
     private List<UserData> users = new ArrayList<>();
 
+    private UserData self;
+    private UserData gameMaster;
+
     public SuperGameData(SuperGame game, TempUser user) {
         this.code = game.getCode();
         Game currentGame = game.getCurrentGame();
@@ -22,6 +25,8 @@ public class SuperGameData {
             this.currentGame = currentGame.getGameData(user);
             this.gameType = currentGame.getClass().getSimpleName();
         }
-        this.users.addAll(game.getUsers().stream().map((TempUser data) -> new UserData(data.getUsername())).toList());
+        this.users.addAll(game.getUsers().stream().map((TempUser data) -> new UserData(data, game.getGameMaster() == data)).toList());
+        this.self = new UserData(user, game.getGameMaster() == user);
+        this.gameMaster = new UserData(game.getGameMaster(), true);
     }
 }

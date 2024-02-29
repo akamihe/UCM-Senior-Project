@@ -12,9 +12,10 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class TempUser {
     private static HashMap<String, TempUser> tempUsers = new HashMap<>();
-
+    public static int CURRENT_COUNT = 0;
     @JsonIgnore
     private SuperGame instance;
+    private int instanceId = CURRENT_COUNT++;
     private Integer sourceUser = null;
     private String username;
     private String code;

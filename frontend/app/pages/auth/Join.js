@@ -40,7 +40,6 @@ function Join() {
                     className="d-flex flex-column justify-content-center align-items-center col-12"
                     style={{ flex: 0.8 }}
                 >
-                    (
                         <>
                             <Form className="col-12" onSubmit={submitUser}>
                                 <Form.Group controlId="username" style={{marginBottom: 16}}>
@@ -71,7 +70,6 @@ function Join() {
                             </Form>
                             <ErrorForm error={error} />
                         </>
-                    )
                 </div>
             </div>
         </div>
