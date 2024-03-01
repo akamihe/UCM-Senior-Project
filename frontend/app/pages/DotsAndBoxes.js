@@ -126,11 +126,37 @@ checkSquare = (j, k, lineCoordinates) => {
     return [topLine, bottomLine, leftLine, rightLine].every(coord => lineCoordinates[coord] === 1 || lineCoordinates[coord] === 2 || lineCoordinates[coord] === 3 || lineCoordinates[coord] === 4);
 };
 
-  checkGameOver = () => {
-    this.setState((prevState) => ({
-      winMessage: prevState.numRed + prevState.numGreen + prevState.numBlue + prevState.numYellow === prevState.boardSize ** 2 ? this.makeWinMessage(prevState) : '',
-    }));
-  };
+checkGameOver = () => {
+    this.setState((prevState) => {
+        const totalLines = (prevState.boardSize * (prevState.boardSize + 1)) * 2; // Total possible lines in an 8x8 grid
+        const linesDrawn = Object.values(prevState.lineCoordinates).filter(value => value > 0).length;
+        
+        if (linesDrawn === totalLines) {
+            // Game is over, calculate scores and sort
+            const scores = [
+                { player: 'Red', boxes: prevState.numRed },
+                { player: 'Green', boxes: prevState.numGreen },
+                { player: 'Blue', boxes: prevState.numBlue },
+                { player: 'Yellow', boxes: prevState.numYellow },
+            ];
+
+            scores.sort((a, b) => b.boxes - a.boxes); // Sort by boxes count
+
+            // Assuming onComplete is a prop passed to DotsAndBoxes for handling game completion
+            if (typeof this.props.onComplete === 'function') {
+                // Call onComplete with sorted player scores
+                this.props.onComplete(scores.map(score => score.player));
+            }
+
+            return {
+                ...prevState,
+                winMessage: `Game Over! ${scores[0].player} wins!`,
+            };
+        }
+
+        return null; // Return null if no update to state is needed
+    });
+};
 
   makeWinMessage = (state) => {
     let winMessage;
