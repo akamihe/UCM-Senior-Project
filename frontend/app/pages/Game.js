@@ -3,6 +3,8 @@ import Sudoku from "./Sudoku";
 import Battleship from "./Battleship";
 import { FaCircleCheck } from "react-icons/fa6";
 import SudokuPuzzle from "./SudokuPuzzle";
+import HangMan from "./Hangman";
+import DotsAndBoxes from "./DotsAndBoxes";
 
 const style = {
   container: { display: "flex", flexDirection: "column", justifyContent: "center", height: "100%" },
@@ -74,7 +76,7 @@ const initialUsers = [
   { name: "jill_doe", pts: 0, done: false, ptsAwarded: 0 },
 ]
 
-const games = ["Sudoku", "Battleship"];
+const games = ["DotsAndBoxes", "HangMan", "Sudoku", "Battleship"];
 
 const Game = () => {
   const [count, setCount] = useState(10);
@@ -90,7 +92,7 @@ const Game = () => {
 
   useEffect(() => {
     if (!isGameActive)
-      countDown(10);
+      countDown(5);
   }, [isGameActive])
 
   useEffect(() => {
@@ -175,6 +177,8 @@ const Game = () => {
       );
     } else if (game === "Battleship") {
       return <Battleship />
+    } else if (game === "DotsAndBoxes"){
+      return <DotsAndBoxes />
     }
   
     return null;

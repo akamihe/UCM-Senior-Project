@@ -1,46 +1,31 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
 
-const GameContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 100vh;
-`;
+const GameContainerStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  height: '100vh',
+};
 
-const BoardContainer = styled.div`
-  position: relative;
-`;
+const DotStyle = {
+  width: '10px',
+  height: '10px',
+  borderRadius: '50%',
+  backgroundColor: 'black',
+  position: 'absolute',
+};
 
-const Dot = styled.div`
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: black;
-  position: absolute;
-`;
+const LineContainerStyle = {
+  position: 'absolute',
+  cursor: 'pointer',
+};
 
-const LineContainer = styled.div`
-  width: ${({ isVertical }) => (isVertical ? '2px' : '20px')};
-  height: ${({ isVertical }) => (isVertical ? '20px' : '2px')};
-  background-color: ${({ isVisible, color }) => (isVisible ? color : 'transparent')};
-  position: absolute;
-  cursor: pointer;
-`;
-
-const Box = styled.div`
-  width: 20px;
-  height: 20px;
-  background-color: ${({ color }) => color};
-  position: absolute;
-`;
-
-const InfoContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  width: 300px;
-  margin-bottom: 20px;
-`;
+const InfoContainerStyle = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  width: '300px',
+  marginBottom: '20px',
+};
 
 const DotsAndBoxes = () => {
   const [lineCoordinates, setLineCoordinates] = useState({});
@@ -51,44 +36,72 @@ const DotsAndBoxes = () => {
   const fillLine = (i, j, k) => {
     const currentCoord = `${i},${j},${k}`;
     if (!lineCoordinates[currentCoord]) {
-      setLineCoordinates(prevLineCoordinates => ({
+      setLineCoordinates((prevLineCoordinates) => ({
         ...prevLineCoordinates,
-        [currentCoord]: turn
+        [currentCoord]: turn,
       }));
-  
+
       const lineColor = getPlayerColor(turn);
       let madeSquare = false;
-  
+
       // Check if box is completed
-      if (i === 0 && j > 0 && k < 7 && lineCoordinates[`1,${k},${j}`] && lineCoordinates[`1,${k},${j + 1}`] && lineCoordinates[`0,${j},${k}`]) {
-        setBoxColors(prevBoxColors => ({
+      if (
+        i === 0 &&
+        j > 0 &&
+        k < 7 &&
+        lineCoordinates[`1,${k},${j}`] &&
+        lineCoordinates[`1,${k},${j + 1}`] &&
+        lineCoordinates[`0,${j},${k}`]
+      ) {
+        setBoxColors((prevBoxColors) => ({
           ...prevBoxColors,
-          [`${j},${k}`]: lineColor
+          [`${j},${k}`]: lineColor,
         }));
         madeSquare = true;
       }
-      if (i === 0 && j < 7 && k < 7 && lineCoordinates[`1,${k},${j}`] && lineCoordinates[`1,${k},${j + 1}`] && lineCoordinates[`0,${j + 1},${k}`]) {
-        setBoxColors(prevBoxColors => ({
+      if (
+        i === 0 &&
+        j < 7 &&
+        k < 7 &&
+        lineCoordinates[`1,${k},${j}`] &&
+        lineCoordinates[`1,${k},${j + 1}`] &&
+        lineCoordinates[`0,${j + 1},${k}`]
+      ) {
+        setBoxColors((prevBoxColors) => ({
           ...prevBoxColors,
-          [`${j},${k}`]: lineColor
+          [`${j},${k}`]: lineColor,
         }));
         madeSquare = true;
       }
-      if (i === 1 && j < 7 && k > 0 && lineCoordinates[`0,${j},${k}`] && lineCoordinates[`0,${j + 1},${k}`] && lineCoordinates[`1,${k},${j}`]) {
-        setBoxColors(prevBoxColors => ({
+      if (
+        i === 1 &&
+        j < 7 &&
+        k > 0 &&
+        lineCoordinates[`0,${j},${k}`] &&
+        lineCoordinates[`0,${j + 1},${k}`] &&
+        lineCoordinates[`1,${k},${j}`]
+      ) {
+        setBoxColors((prevBoxColors) => ({
           ...prevBoxColors,
-          [`${k},${j}`]: lineColor
+          [`${k},${j}`]: lineColor,
         }));
         madeSquare = true;
       }
-      if (i === 1 && j < 7 && k < 7 && lineCoordinates[`0,${j},${k + 1}`] && lineCoordinates[`0,${j + 1},${k + 1}`] && lineCoordinates[`1,${k},${j}`]) {
-        setBoxColors(prevBoxColors => ({
+      if (
+        i === 1 &&
+        j < 7 &&
+        k < 7 &&
+        lineCoordinates[`0,${j},${k + 1}`] &&
+        lineCoordinates[`0,${j + 1},${k + 1}`] &&
+        lineCoordinates[`1,${k},${j}`]
+      ) {
+        setBoxColors((prevBoxColors) => ({
           ...prevBoxColors,
-          [`${k},${j}`]: lineColor
+          [`${k},${j}`]: lineColor,
         }));
         madeSquare = true;
       }
-  
+
       if (madeSquare) {
         const playerColor = getPlayerColor(turn);
         const updatedBoxCounts = { ...getBoxCounts(boxColors) };
@@ -99,7 +112,7 @@ const DotsAndBoxes = () => {
           setTurn(turn);
         }
       } else {
-        setTurn(prevTurn => (prevTurn % 4) + 1); // Next player's turn
+        setTurn((prevTurn) => (prevTurn % 4) + 1); // Next player's turn
       }
     }
   };
@@ -115,7 +128,7 @@ const DotsAndBoxes = () => {
 
   const checkGameOver = (boxColors) => {
     const players = [0, 0, 0, 0]; // Red, Green, Blue, Yellow
-    Object.values(boxColors).forEach(color => {
+    Object.values(boxColors).forEach((color) => {
       switch (color) {
         case 'red':
           players[0]++;
@@ -166,25 +179,43 @@ const DotsAndBoxes = () => {
       for (let j = 0; j < 8; j++) {
         rows.push(
           <React.Fragment key={`${i},${j}`}>
-            <Dot style={{ top: dotMargin + i * dotSpacing, left: dotMargin + j * dotSpacing }} />
+            <div style={{ ...DotStyle, top: dotMargin + i * dotSpacing, left: dotMargin + j * dotSpacing }} />
             {j < 7 && (
-              <LineContainer
-                isVisible={lineCoordinates[`0,${i},${j}`] !== undefined}
-                color={lineCoordinates[`0,${i},${j}`] ? getPlayerColor(lineCoordinates[`0,${i},${j}`]) : 'transparent'}
+              <div
                 onClick={() => fillLine(0, i, j)}
-                style={{ top: dotMargin + i * dotSpacing + 4, left: dotMargin + j * dotSpacing + 10 }}
+                style={{
+                  ...LineContainerStyle,
+                  top: dotMargin + i * dotSpacing + 4,
+                  left: dotMargin + j * dotSpacing + 10,
+                  width: '20px',
+                  height: '2px',
+                  backgroundColor: lineCoordinates[`0,${i},${j}`] ? getPlayerColor(lineCoordinates[`0,${i},${j}`]) : 'transparent',
+                }}
               />
             )}
             {i < 7 && (
               <React.Fragment>
-                <LineContainer
-                  isVertical
-                  isVisible={lineCoordinates[`1,${j},${i}`] !== undefined}
-                  color={lineCoordinates[`1,${j},${i}`] ? getPlayerColor(lineCoordinates[`1,${j},${i}`]) : 'transparent'}
+                <div
                   onClick={() => fillLine(1, j, i)}
-                  style={{ top: dotMargin + i * dotSpacing + 10, left: dotMargin + j * dotSpacing + 4 }}
+                  style={{
+                    ...LineContainerStyle,
+                    top: dotMargin + i * dotSpacing + 10,
+                    left: dotMargin + j * dotSpacing + 4,
+                    width: '2px',
+                    height: '20px',
+                    backgroundColor: lineCoordinates[`1,${j},${i}`] ? getPlayerColor(lineCoordinates[`1,${j},${i}`]) : 'transparent',
+                  }}
                 />
-                <Box color={boxColors[`${j},${i}`] || 'transparent'} style={{ top: dotMargin + i * dotSpacing - 5, left: dotMargin + j * dotSpacing - 5 }} />
+                <div
+                  style={{
+                    width: '20px',
+                    height: '20px',
+                    backgroundColor: boxColors[`${j},${i}`] || 'transparent',
+                    position: 'absolute',
+                    top: dotMargin + i * dotSpacing - 5,
+                    left: dotMargin + j * dotSpacing - 5,
+                  }}
+                />
               </React.Fragment>
             )}
           </React.Fragment>
@@ -196,35 +227,29 @@ const DotsAndBoxes = () => {
 
   const getBoxCounts = (boxColors) => {
     return {
-      red: Object.values(boxColors).filter(color => color === 'red').length,
-      green: Object.values(boxColors).filter(color => color === 'green').length,
-      blue: Object.values(boxColors).filter(color => color === 'blue').length,
-      yellow: Object.values(boxColors).filter(color => color === 'yellow').length,
+      red: Object.values(boxColors).filter((color) => color === 'red').length,
+      green: Object.values(boxColors).filter((color) => color === 'green').length,
+      blue: Object.values(boxColors).filter((color) => color === 'blue').length,
+      yellow: Object.values(boxColors).filter((color) => color === 'yellow').length,
     };
   };
 
   const boxCounts = getBoxCounts(boxColors);
 
   return (
-    <GameContainer>
+    <div style={GameContainerStyle}>
       <div>
         <h1>Dots & Boxes</h1>
-        <InfoContainer>
+        <div style={InfoContainerStyle}>
           <div>
-            Box Counts: 
-            Red: {boxCounts.red}, 
-            Green: {boxCounts.green}, 
-            Blue: {boxCounts.blue}, 
-            Yellow: {boxCounts.yellow}
+            Box Counts: Red: {boxCounts.red}, Green: {boxCounts.green}, Blue: {boxCounts.blue}, Yellow: {boxCounts.yellow}
           </div>
           <div>Player {turn}'s Turn</div>
-        </InfoContainer>
-        <BoardContainer>
-          {makeBoard()}
-        </BoardContainer>
+        </div>
+        <div style={{ position: 'relative' }}>{makeBoard()}</div>
         {winMessage && <p>{winMessage}</p>}
       </div>
-    </GameContainer>
+    </div>
   );
 };
 
