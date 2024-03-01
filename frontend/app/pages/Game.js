@@ -76,7 +76,7 @@ const initialUsers = [
   { name: "jill_doe", pts: 0, done: false, ptsAwarded: 0 },
 ]
 
-const games = ["DotsAndBoxes", "HangMan", "Sudoku", "Battleship"];
+const games = [ "HangMan", "Sudoku", "DotsAndBoxes", "Battleship"];
 
 const Game = () => {
   const [count, setCount] = useState(10);
@@ -154,7 +154,8 @@ const Game = () => {
           </div>
         </>
       )
-    }else if (game === "HangMan") {
+    }
+    else if (game === "HangMan") {
       return (
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -175,11 +176,13 @@ const Game = () => {
           </div>
         </div>
       );
-    } else if (game === "Battleship") {
-      return <Battleship />
-    } else if (game === "DotsAndBoxes"){
-      return <DotsAndBoxes />
+    } 
+    else if (game === "DotsAndBoxes"){
+      return <DotsAndBoxes onComplete={this.handleGameCompletion} />;
     }
+    else if (game === "Battleship") {
+      return <Battleship />
+    } 
   
     return null;
   }
