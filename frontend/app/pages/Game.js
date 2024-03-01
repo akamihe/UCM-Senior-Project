@@ -152,6 +152,27 @@ const Game = () => {
           </div>
         </>
       )
+    }else if (game === "HangMan") {
+      return (
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div style={{ border: '1px solid black', padding: '10px', margin: '10px' }}>
+              <HangMan onComplete={() => markUserAsDone(0)} />
+            </div>
+            <div style={{ border: '1px solid black', padding: '10px', margin: '10px' }}>
+              <HangMan onComplete={() => markUserAsDone(1)} />
+            </div>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div style={{ border: '1px solid black', padding: '10px', margin: '10px' }}>
+              <HangMan onComplete={() => markUserAsDone(2)} />
+            </div>
+            <div style={{ border: '1px solid black', padding: '10px', margin: '10px' }}>
+              <HangMan onComplete={() => markUserAsDone(3)} />
+            </div>
+          </div>
+        </div>
+      );
     } else if (game === "Battleship") {
       return <Battleship />
     }
