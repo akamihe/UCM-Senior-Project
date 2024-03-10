@@ -9,6 +9,8 @@ import ucmo.senior_project.domain.SuperGame;
 import ucmo.senior_project.domain.TempUser;
 import ucmo.senior_project.resource.GameCodeLogin;
 import ucmo.senior_project.resource.SuperGameData;
+import ucmo.senior_project.resource.UserDataInterface;
+import ucmo.senior_project.resource.UserDisconnected;
 import ucmo.senior_project.service.GameUserService;
 import ucmo.senior_project.middleware.LoginInterceptor;
 import jakarta.servlet.http.HttpServletRequest;
@@ -80,8 +82,11 @@ public class GameUserController {
 	}
 	@MessageMapping("/game/instance/{code}")
 	@SendTo("/game/instance/{code}")
-	public SuperGameData handleGame(@DestinationVariable String code, @RequestBody JsonNode payload) throws Exception {
+	public UserDataInterface handleGame(@DestinationVariable String code, @RequestBody JsonNode payload) throws Exception {
 		TempUser user = TempUser.fetchTempUser(code);
+		if (user == null) {
+			return new UserDisconnected();
+		}
 		SuperGame game = user.getInstance();
 		game.updateInput(user, payload);
 		return new SuperGameData(game, user);

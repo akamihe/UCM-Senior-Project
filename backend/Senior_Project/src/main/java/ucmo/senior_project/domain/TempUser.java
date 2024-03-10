@@ -5,13 +5,16 @@ import io.jsonwebtoken.Jwts;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @Data
 @RequiredArgsConstructor
 public class TempUser {
-    private static HashMap<String, TempUser> tempUsers = new HashMap<>();
+    public static long TIMEOUT = 50000; //50 seconds
+    private static Map<String, TempUser> tempUsers = Collections.synchronizedMap(new HashMap<>());
     public static int CURRENT_COUNT = 0;
     @JsonIgnore
     private SuperGame instance;
@@ -20,6 +23,7 @@ public class TempUser {
     private String username;
     private String code;
     private String gameCode;
+    public long lastInteraction = 0;
 
     public TempUser(SuperGame instance, String username, String gameCode) {
         this.instance = instance;
@@ -43,8 +47,26 @@ public class TempUser {
                 .setSubject("login")
                 .compact();
     }
+    public synchronized boolean isInactive() {
+        long lastTime = System.currentTimeMillis();
+        if(this.lastInteraction == 0) {
+            this.lastInteraction = lastTime;
+        }
+        long difference = lastTime - this.lastInteraction;
+        return difference > TIMEOUT; // 50 seconds.
+    }
+    public synchronized void updateLastInteraction() {
+        this.lastInteraction = System.currentTimeMillis();
+    }
+    public synchronized void destroy() {
+        tempUsers.remove(this.code);
+    }
     public static TempUser fetchTempUser(String code) {
-        return tempUsers.get(code);
+        TempUser found = tempUsers.get(code);
+        if (found != null) {
+            found.updateLastInteraction();
+        }
+        return found;
     }
 
     public int hashCode() {
