@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class SuperGameData {
+public class SuperGameData implements UserDataInterface {
     private GameData currentGame;
     private String gameType;
     private String code;
