@@ -8,6 +8,7 @@ import HangMan from './types/HangMan';
 import Sodoku from './types/Sudoku';
 import TicTacToe from './types/TicTacToe';
 import GameWaitingRoom from './types/GameWaitingRoom';
+import AuthService from '../../services/AuthService';
 
 
 function GameHandler() {
@@ -15,6 +16,9 @@ function GameHandler() {
     const [gameState, setGameState] = useState({});
     socket.bindGameInstanceUpdate(function(game) {
         setGameState(game);
+    });
+    socket.setOnDisconnect(function() {
+        AuthService.logout()
     });
     if(!gameState.users) {
         return <div></div>
