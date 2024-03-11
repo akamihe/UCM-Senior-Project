@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import Sudoku from "./Sudoku";
 import Battleship from "./Battleship";
-import { FaCircleCheck } from "react-icons/fa6";
+import { FaCircleCheck, FaCircleXmark } from "react-icons/fa6";
 import SudokuPuzzle from "./SudokuPuzzle";
 
 const style = {
@@ -48,7 +48,7 @@ const style = {
       width: 29, 
       fontSize: 18, 
       margin: "2px 12px 0 0", 
-      color: color, 
+      color, 
       border: `1px solid ${color}`, 
       borderRadius: "50%", 
       fontWeight: "bold", 
@@ -68,35 +68,62 @@ const style = {
 }
 
 const initialUsers = [
-  { name: "john_doe", pts: 0, done: false, ptsAwarded: 0 },
-  { name: "jane_doe", pts: 0, done: false, ptsAwarded: 0 },
-  { name: "jack_doe", you: true, pts: 0, done: false, ptsAwarded: 0 },
-  { name: "jill_doe", pts: 0, done: false, ptsAwarded: 0 },
+  { id: 1, name: "john_doe", },
+  { id: 2, name: "jane_doe", },
+  { id: 3, name: "jack_doe", you: true },
+  { id: 4, name: "jill_doe", }
 ]
 
-const games = ["Sudoku", "Battleship"];
+// const games = ["Sudoku", "Battleship"];
+const games = ["Battleship"]
 
 const Game = () => {
   const [count, setCount] = useState(10);
   const [gameNum, setGameNum] = useState(-1);
   const [isGameActive, setIsGameActive] = useState(false);
-  const [users, setUsers] = useState(initialUsers);
+
+  const [users, setUsers] = useState(initialUsers.map((user, idx) => ({
+    ...user,
+    pts: 0,
+    done: false,
+    eliminated: false,
+    ptsAwarded: 0,
+    board: new Array(10).fill(new Array(10).fill(false)),
+    ships: [
+      // [ [0, 3], [0, 4], [0, 5], [0, 6] ],
+      // [ [3, 1], [4, 1], [5, 1] ],
+      // [ [5, 8] ],
+      [ [8, 4], [8, 5] ],
+      // [ [8, 9], [9, 9] ]
+    ],
+    attacking: (idx + 1) % initialUsers.length
+  })));
+
+  const [turn, setTurn] = useState(0);
+  const [turnNum, setTurnNum] = useState(0);
+  const [selectedCell, setSelectedCell] = useState(null);
 
   const sudokuPuzzle = useMemo(() => {
     return SudokuPuzzle.generatePuzzle();
   }, [])
 
-  const gameFinished = users.every(user => user.done);
+  const gameFinished = (
+    users.every(user => user.done) || 
+    users.filter(user => user.eliminated).length === users.length - 1
+  );
 
   useEffect(() => {
     if (!isGameActive)
-      countDown(10);
+      // countDown(10);
+      countDown(0);
   }, [isGameActive])
 
   useEffect(() => {
     if (gameFinished) {
-      setUsers(users.map(user => ({ ...user, done: false, pts: user.pts + user.ptsAwarded })));
-      setIsGameActive(false);
+      setTimeout(() => {
+        setUsers(users.map(user => ({ ...user, done: false, eliminiated: false, pts: user.pts + user.ptsAwarded })));
+        setIsGameActive(false);
+      }, 3000);
     }
   }, [gameFinished])
 
@@ -121,6 +148,51 @@ const Game = () => {
       return newUsers;
     })
   }
+
+  function handleTurnComplete(i, j) {
+    const newUsers = users.slice();
+    const attackedIdx = users[turn].attacking;
+    const board = newUsers[attackedIdx].board.map(row => row.slice());
+    const twoLeft = newUsers.filter(user => user.eliminated).length === 2;
+
+    board[i][j] = true; 
+
+    const allShipsSunk = newUsers[attackedIdx].ships.every(ship => {
+      return ship.every(cell => board[cell[0]][cell[1]]);
+    });
+
+    newUsers[attackedIdx] = { ...newUsers[attackedIdx], board, eliminated: allShipsSunk };
+    newUsers[turn] = { 
+      ...newUsers[turn],
+      ptsAwarded: newUsers[turn].ptsAwarded + (allShipsSunk ? (twoLeft ? 2 : 1) : 0)
+    };
+
+    setTimeout(() => {
+      if (allShipsSunk)
+        newUsers[turn] = { ...newUsers[turn], attacking: newUsers[attackedIdx].attacking };
+      else
+        setTurn(attackedIdx);
+      
+      setSelectedCell(null);
+      setTurnNum(turnNum + 1);
+    }, 2500);
+    
+    setSelectedCell([i, j]);
+    setUsers(newUsers);
+  }
+
+  function getShip(ships, i, j) {
+    for (const ship of ships) {
+      for (const cell of ship) {
+        if (cell[0] === i && cell[1] === j)
+          return ship;
+      }
+    }
+
+    return null;
+  }
+
+  const attacked = users[users[turn].attacking];
 
   function renderGame(game) {
     if (game === "Sudoku") {
@@ -153,7 +225,48 @@ const Game = () => {
         </>
       )
     } else if (game === "Battleship") {
-      return <Battleship />
+      const instances = users.map(user => (
+        <Battleship
+          turn={{
+            attacker: users[turn],
+            attacked,
+            next: attacked.eliminated ? users[attacked.attacking] : attacked, 
+            turn: turnNum,
+            selectedCell
+          }}
+          onTurnComplete={handleTurnComplete}
+          user={user}
+        />
+      ))
+
+      return (
+        <>
+          <div style={{ ...style.gameInstanceRow, borderBottom: "1px solid #0002" }}>
+            <div style={style.gameInstanceCellL}>
+              <div style={style.gameInstanceContent}>
+                {instances[0]}
+              </div>
+            </div>
+            <div style={style.gameInstanceCellR}>
+              <div style={style.gameInstanceContent}>
+                {instances[1]}
+              </div>
+            </div>
+          </div>
+          <div style={style.gameInstanceRow}>
+            <div style={style.gameInstanceCellL}>
+              <div style={style.gameInstanceContent}>
+                {instances[2]}
+              </div>
+            </div>
+            <div style={style.gameInstanceCellR}>
+              <div style={style.gameInstanceContent}>
+                {instances[3]}
+              </div>
+            </div>
+          </div>
+        </>
+      )
     }
   
     return null;
@@ -176,6 +289,7 @@ const Game = () => {
                 <span style={{ flex: 1, marginRight: 8 }}>{user.name}</span>
                 <span style={style.userInfoItem.pts}>{user.pts} pts</span>
                 {user.done && <FaCircleCheck style={style.userInfoItem.doneIcon} />}
+                {user.eliminated && <FaCircleXmark style={{ ...style.userInfoItem.doneIcon, color: "red" }} />}
               </div>
             ))}
           </div>
