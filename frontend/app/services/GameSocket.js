@@ -12,6 +12,7 @@ export default class GameSocket {
     constructor(code) {
         this.userCode = code;
         this.gameInstance = null;
+        this.onDisconnect = null;
         this.socket = new Client({
             brokerURL: 'wss://localhost:8443/game/instance'
         });
@@ -21,25 +22,28 @@ export default class GameSocket {
                 if(data && data.body) {
                     var data = JSON.parse(data.body);
                     if(data && data.code) {
+                        console.log(data);
                         _this.gameInstance = data;
                         if(_this.callable) {
                             _this.callable(_this.gameInstance);
                         }
-                    }
+                    } else if(!!data.disconnected && _this.onDisconnect) {
+                        _this.onDisconnect();
+                    } 
                 }
             });
             setInterval(function(){
                 _this.sendMessageToServer({});
             }, 1000);
         };
-        this.socket.onWebSocketError(function(abc) {
-            console.log('error detected!!', abc);
-        });
           
         this.socket.activate();
     }
     bindGameInstanceUpdate(callable) {
         this.callable = callable;
+    }
+    setOnDisconnect(disconnect) {
+        this.onDisconnect = disconnect;
     }
     sendMessageToServer(data) {
         this.socket.publish({
