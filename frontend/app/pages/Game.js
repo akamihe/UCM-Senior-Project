@@ -76,7 +76,9 @@ const initialUsers = [
   { name: "jill_doe", pts: 0, done: false, ptsAwarded: 0 },
 ]
 
-const games = [ "HangMan", "Sudoku", "DotsAndBoxes", "Battleship"];
+const games = [ "Sudoku", "DotsAndBoxes",   "HangMan",   "Battleship"];
+
+
 
 const Game = () => {
   const [count, setCount] = useState(10);
@@ -115,13 +117,21 @@ const Game = () => {
     }
   }
 
-  function markUserAsDone(idx) {
+  function markUserAsDone(idx, options = {}) {
     setUsers(prev => {
       const newUsers = prev.slice();
-      const ptsAwarded = 4 - (newUsers.filter(user => user.done).length + 1);
-      newUsers[idx] = { ...newUsers[idx], done: true, ptsAwarded };
+      const doneCount = newUsers.filter(user => user.done).length;
+      let ptsAwarded = 4 - doneCount;
+      if (options.gameType === "DotsAndBoxes") {
+        ptsAwarded += 1;
+      }
+      newUsers[idx] = { ...newUsers[idx], done: true, ptsAwarded: Math.max(ptsAwarded, 1) };
       return newUsers;
-    })
+    });
+  }
+
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
   function renderGame(game) {
@@ -177,8 +187,20 @@ const Game = () => {
         </div>
       );
     } 
-    else if (game === "DotsAndBoxes"){
-      return <DotsAndBoxes onComplete={this.handleGameCompletion} />;
+    else if (game === "DotsAndBoxes") {
+      return (
+        <DotsAndBoxes onComplete={async (scores) => {
+          const sortedIndices = scores
+            .map((_, index) => index)
+            .sort((a, b) => scores[b].boxes - scores[a].boxes);
+          
+          for (let placement = 0; placement < sortedIndices.length; placement++) {
+            const playerIndex = sortedIndices[placement];
+            await sleep(placement * 1000);
+            markUserAsDone(playerIndex, { gameType: "DotsAndBoxes" });
+          }
+        }} />
+      );
     }
     else if (game === "Battleship") {
       return <Battleship />

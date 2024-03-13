@@ -64,98 +64,93 @@ class DotsAndBoxes extends Component {
 };
 
 fillLine = (i, j, k) => {
-    const currentCoord = `${i},${j},${k}`;
-    if (this.state.lineCoordinates[currentCoord] === 0) {
-        this.setState(prevState => {
-            const lineCoordinates = { ...prevState.lineCoordinates, [currentCoord]: prevState.turn };
-            let squaresCompleted = false;
-            let boxColors = { ...prevState.boxColors };
-            let numRed = prevState.numRed, numGreen = prevState.numGreen, numBlue = prevState.numBlue, numYellow = prevState.numYellow;
+  const currentCoord = `${i},${j},${k}`;
+  if (this.state.lineCoordinates[currentCoord] === 0) {
+      this.setState(prevState => {
+          const lineCoordinates = { ...prevState.lineCoordinates, [currentCoord]: prevState.turn };
+          let squaresCompleted = false;
+          let boxColors = { ...prevState.boxColors };
+          let numRed = prevState.numRed, numGreen = prevState.numGreen, numBlue = prevState.numBlue, numYellow = prevState.numYellow;
 
-            // Check adjacent squares for completion
-            const potentialSquares = this.getPotentialSquares(i, j, k);
+          const potentialSquares = this.getPotentialSquares(i, j, k);
 
-            potentialSquares.forEach(([sqY, sqX]) => {
-                if (this.checkSquare(sqY, sqX, lineCoordinates)) {
-                    squaresCompleted = true;
-                    const colorKey = `num${this.getPlayerColor(prevState.turn).charAt(0).toUpperCase()}${this.getPlayerColor(prevState.turn).slice(1)}`;
-                    boxColors[`${sqY},${sqX}`] = this.getPlayerColor(prevState.turn);
-                    if (colorKey === "numRed") numRed++;
-                    if (colorKey === "numGreen") numGreen++;
-                    if (colorKey === "numBlue") numBlue++;
-                    if (colorKey === "numYellow") numYellow++;
-                }
-            });
+          potentialSquares.forEach(([sqY, sqX]) => {
+              if (this.checkSquare(sqY, sqX, lineCoordinates)) {
+                  squaresCompleted = true;
+                  const colorKey = `num${this.getPlayerColor(prevState.turn).charAt(0).toUpperCase()}${this.getPlayerColor(prevState.turn).slice(1)}`;
+                  boxColors[`${sqY},${sqX}`] = this.getPlayerColor(prevState.turn);
+                  if (colorKey === "numRed") numRed++;
+                  if (colorKey === "numGreen") numGreen++;
+                  if (colorKey === "numBlue") numBlue++;
+                  if (colorKey === "numYellow") numYellow++;
+              }
+          });
 
-            const newState = {
-                ...prevState,
-                lineCoordinates,
-                boxColors,
-                numRed,
-                numGreen,
-                numBlue,
-                numYellow,
-                turn: squaresCompleted ? prevState.turn : (prevState.turn % 4) + 1,
-            };
+          const newState = {
+              ...prevState,
+              lineCoordinates,
+              boxColors,
+              numRed,
+              numGreen,
+              numBlue,
+              numYellow,
+              turn: squaresCompleted ? prevState.turn : (prevState.turn % 4) + 1,
+          };
 
-            return newState;
-        }, this.checkGameOver);
-    }
+          return newState;
+      }, () => {
+          this.checkGameOver();
+      });
+  }
 };
 
 getPotentialSquares = (i, j, k) => {
-    // For a horizontal line (i = 0), check squares above and below
     if (i === 0) {
         return [[j, k], [j - 1, k]].filter(([y, x]) => y >= 0 && x >= 0 && y < this.state.boardSize && x < this.state.boardSize);
     }
-    // For a vertical line (i = 1), check squares to the left and right
     else {
         return [[j, k], [j, k - 1]].filter(([y, x]) => y >= 0 && x >= 0 && y < this.state.boardSize && x < this.state.boardSize);
     }
 };
 
 checkSquare = (j, k, lineCoordinates) => {
-    // Each square is identified by its top-left corner.
-    // Check if the top, bottom, left, and right lines of this square are filled.
     const topLine = `0,${j},${k}`;
     const bottomLine = `0,${j + 1},${k}`;
     const leftLine = `1,${j},${k}`;
     const rightLine = `1,${j},${k + 1}`;
 
-    // Check if all sides of the square have a line drawn.
     return [topLine, bottomLine, leftLine, rightLine].every(coord => lineCoordinates[coord] === 1 || lineCoordinates[coord] === 2 || lineCoordinates[coord] === 3 || lineCoordinates[coord] === 4);
 };
 
 checkGameOver = () => {
-    this.setState((prevState) => {
-        const totalLines = (prevState.boardSize * (prevState.boardSize + 1)) * 2; // Total possible lines in an 8x8 grid
-        const linesDrawn = Object.values(prevState.lineCoordinates).filter(value => value > 0).length;
-        
-        if (linesDrawn === totalLines) {
-            // Game is over, calculate scores and sort
-            const scores = [
-                { player: 'Red', boxes: prevState.numRed },
-                { player: 'Green', boxes: prevState.numGreen },
-                { player: 'Blue', boxes: prevState.numBlue },
-                { player: 'Yellow', boxes: prevState.numYellow },
-            ];
+  const { lineCoordinates, boardSize } = this.state;
+  const totalLines = 112
+  const linesDrawn = Object.values(lineCoordinates).filter(coord => coord > 0).length;
 
-            scores.sort((a, b) => b.boxes - a.boxes); // Sort by boxes count
+  if (linesDrawn === totalLines) {
+    this.setState(prevState => {
+      const scores = [
+        { player: 'Red', boxes: prevState.numRed },
+        { player: 'Green', boxes: prevState.numGreen },
+        { player: 'Blue', boxes: prevState.numBlue },
+        { player: 'Yellow', boxes: prevState.numYellow },
+      ];
 
-            // Assuming onComplete is a prop passed to DotsAndBoxes for handling game completion
-            if (typeof this.props.onComplete === 'function') {
-                // Call onComplete with sorted player scores
-                this.props.onComplete(scores.map(score => score.player));
-            }
+      const highestScore = Math.max(...scores.map(score => score.boxes));
+      const winners = scores.filter(score => score.boxes === highestScore).map(score => score.player);
 
-            return {
-                ...prevState,
-                winMessage: `Game Over! ${scores[0].player} wins!`,
-            };
-        }
+      let winMessage = winners.length > 1 ? `${winners.join(', ')} win!` : `${winners[0]} wins!`;
 
-        return null; // Return null if no update to state is needed
+      if (typeof this.props.onComplete === 'function') {
+        this.props.onComplete(scores);
+      }
+
+      return {
+        ...prevState,
+        winMessage: `Game Over! ${winMessage}`,
+      };
     });
+  }
 };
 
   makeWinMessage = (state) => {
@@ -195,7 +190,6 @@ checkGameOver = () => {
     const rows = [];
     const dotMargin = 20;
     const dotSpacing = 30;
-    // Adjust loops to only iterate to the boardSize, ensuring an 8x8 grid
     for (let i = 0; i < this.state.boardSize; i++) {
         for (let j = 0; j < this.state.boardSize; j++) {
             rows.push(
@@ -206,7 +200,7 @@ checkGameOver = () => {
                             onClick={() => this.fillLine(0, i, j)}
                             style={{
                                 ...LineContainerStyle,
-                                top: dotMargin + i * dotSpacing + 5, // Centering adjustment
+                                top: dotMargin + i * dotSpacing + 5, 
                                 left: dotMargin + j * dotSpacing + 10,
                                 width: '20px',
                                 height: '2px',
@@ -220,7 +214,7 @@ checkGameOver = () => {
                             style={{
                                 ...LineContainerStyle,
                                 top: dotMargin + i * dotSpacing + 10,
-                                left: dotMargin + j * dotSpacing + 5, // Centering adjustment
+                                left: dotMargin + j * dotSpacing + 5,
                                 width: '2px',
                                 height: '20px',
                                 backgroundColor: this.state.lineCoordinates[`1,${i},${j}`] ? this.getPlayerColor(this.state.lineCoordinates[`1,${i},${j}`]) : 'transparent',

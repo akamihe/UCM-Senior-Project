@@ -54,7 +54,7 @@ class HangMan extends Component {
           this.setState({ displayedWord: newDisplayedWord }, () => {
             if (!newDisplayedWord.includes('_')) {
               this.setState({ winner: 'You' }, () => {
-                this.props.onComplete(); // Call onComplete function from props
+                this.props.onComplete();
               });
             }
           });
