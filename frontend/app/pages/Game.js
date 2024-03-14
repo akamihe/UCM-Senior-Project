@@ -1,22 +1,21 @@
-import { useState, useEffect, useMemo } from "react";
-import Sudoku from "./Sudoku";
+import { useState, useEffect } from "react";
+import { FaCircleCheck, FaCircleXmark } from "react-icons/fa6";
 import Battleship from "./Battleship";
-import { FaCircleCheck } from "react-icons/fa6";
-import SudokuPuzzle from "./SudokuPuzzle";
 import HangMan from "./Hangman";
 import DotsAndBoxes from "./DotsAndBoxes";
+import Sudoku from "./Sudoku";
 
 const style = {
   container: { display: "flex", flexDirection: "column", justifyContent: "center", height: "100%" },
   gameSection: { 
     display: "flex", 
-    flexDirection: 'column', 
     overflow: "hidden",
     width: "100%", 
-    height: "100%" 
+    height: "100%",
+    flexWrap: "wrap" 
   },
-  userInfoSection: { display: "flex", borderTop: "1px solid #0004", gap: 16, padding: 16 },
-  userInfoItem: {
+  playerInfoSection: { display: "flex", borderTop: "1px solid #0004", gap: 16, padding: 16 },
+  playerInfoItem: {
     item: { 
       display: "flex", 
       alignItems: "center", 
@@ -44,13 +43,13 @@ const style = {
     flexDirection: "column", 
     height: "100%"
   },
-  gameResultsUser: {
+  gameResultsPlayer: {
     top: { display: "flex", alignItems: "center", borderBottom: "1px solid #0003", paddingBottom: 8 },
     placeNum: (color) => ({ 
       width: 29, 
       fontSize: 18, 
       margin: "2px 12px 0 0", 
-      color: color, 
+      color, 
       border: `1px solid ${color}`, 
       borderRadius: "50%", 
       fontWeight: "bold", 
@@ -69,49 +68,42 @@ const style = {
   gameInstanceContent: { transform: "scale(0.6)", transformOrigin: "top", paddingTop: 8 }
 }
 
-const initialUsers = [
-  { name: "john_doe", pts: 0, done: false, ptsAwarded: 0 },
-  { name: "jane_doe", pts: 0, done: false, ptsAwarded: 0 },
-  { name: "jack_doe", you: true, pts: 0, done: false, ptsAwarded: 0 },
-  { name: "jill_doe", pts: 0, done: false, ptsAwarded: 0 },
+const COUNTDOWN_LENGTH = 10;
+const initialPlayers = [
+  { id: 1, name: "john_doe", pts: 0, done: false, ptsAwarded: 0 },
+  { id: 2, name: "jane_doe", pts: 0, done: false, ptsAwarded: 0 },
+  { id: 3, name: "jack_doe", you: true, pts: 0, done: false, ptsAwarded: 0 },
+  { id: 4, name: "jill_doe", pts: 0, done: false, ptsAwarded: 0 }
 ]
 
-const games = [ "Sudoku", "DotsAndBoxes",   "HangMan",   "Battleship"];
-
-
+const games = ["Sudoku", "DotsAndBoxes", "HangMan", "Battleship"];
 
 const Game = () => {
-  const [count, setCount] = useState(10);
-  const [gameNum, setGameNum] = useState(-1);
-  const [isGameActive, setIsGameActive] = useState(false);
-  const [users, setUsers] = useState(initialUsers);
+  const [count, setCount] = useState(COUNTDOWN_LENGTH);
+  const [gameNum, setGameNum] = useState(-1); // index of current game
+  const [isGameActive, setIsGameActive] = useState(false); // flag for showing the current game
+  const [players, setPlayers] = useState(initialPlayers.map(player => ({ ...player })));
 
-  const sudokuPuzzle = useMemo(() => {
-    return SudokuPuzzle.generatePuzzle();
-  }, [])
-
-  const gameFinished = users.every(user => user.done);
+  const playersSortedByPts = players.slice().sort((a, b) => b.pts - a.pts);
+  const game = gameNum >= 0 ? games[gameNum] : "";
+  const nextGame = games[gameNum + 1];
+  const elimination = game === "Battleship";
 
   useEffect(() => {
     if (!isGameActive)
-      countDown(5);
-  }, [isGameActive])
-
-  useEffect(() => {
-    if (gameFinished) {
-      setUsers(users.map(user => ({ ...user, done: false, pts: user.pts + user.ptsAwarded })));
-      setIsGameActive(false);
-    }
-  }, [gameFinished])
+      countDown(COUNTDOWN_LENGTH);
+  // once the component inits or a game finishes, display the next game in COUNTDOWN_LENGTH seconds;
+  }, [isGameActive]) 
 
   function countDown(count) {
     setCount(count)
 
     if (count > 0) {
-      setTimeout(() => {
-        countDown(count - 1);
-      }, 1000);
+      setTimeout(() => countDown(count - 1), 1000);
     } else {
+      // once countdown finishes, display the next game, reset game state 
+      // and add the points awarded from the previous game
+      setPlayers(players.map(player => ({ ...player, done: false, pts: player.pts + player.ptsAwarded, ptsAwarded: 0 })));
       setGameNum(gameNum + 1);
       setIsGameActive(true);
     }
@@ -134,98 +126,79 @@ const Game = () => {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-  function renderGame(game) {
-    if (game === "Sudoku") {
-      return (
-        <>
-          <div style={{ ...style.gameInstanceRow, borderBottom: "1px solid #0002" }}>
-            <div style={style.gameInstanceCellL}>
-              <div style={style.gameInstanceContent}>
-                <Sudoku puzzle={sudokuPuzzle} onComplete={() => markUserAsDone(0)} />
-              </div>
-            </div>
-            <div style={style.gameInstanceCellR}>
-              <div style={style.gameInstanceContent}>
-                <Sudoku puzzle={sudokuPuzzle} onComplete={() => markUserAsDone(1)} />
-              </div>
-            </div>
-          </div>
-          <div style={style.gameInstanceRow}>
-            <div style={style.gameInstanceCellL}>
-              <div style={style.gameInstanceContent}>
-                <Sudoku puzzle={sudokuPuzzle} onComplete={() => markUserAsDone(2)} />
-              </div>
-            </div>
-            <div style={style.gameInstanceCellR}>
-              <div style={style.gameInstanceContent}>
-                <Sudoku puzzle={sudokuPuzzle} onComplete={() => markUserAsDone(3)} />
-              </div>
-            </div>
-          </div>
-        </>
-      )
-    }
-    else if (game === "HangMan") {
-      return (
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <div style={{ border: '1px solid black', padding: '10px', margin: '10px' }}>
-              <HangMan onComplete={() => markUserAsDone(0)} />
-            </div>
-            <div style={{ border: '1px solid black', padding: '10px', margin: '10px' }}>
-              <HangMan onComplete={() => markUserAsDone(1)} />
-            </div>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <div style={{ border: '1px solid black', padding: '10px', margin: '10px' }}>
-              <HangMan onComplete={() => markUserAsDone(2)} />
-            </div>
-            <div style={{ border: '1px solid black', padding: '10px', margin: '10px' }}>
-              <HangMan onComplete={() => markUserAsDone(3)} />
-            </div>
-          </div>
-        </div>
-      );
-    } 
-    else if (game === "DotsAndBoxes") {
-      return (
-        <DotsAndBoxes onComplete={async (scores) => {
-          const sortedIndices = scores
-            .map((_, index) => index)
-            .sort((a, b) => scores[b].boxes - scores[a].boxes);
-          
-          for (let placement = 0; placement < sortedIndices.length; placement++) {
-            const playerIndex = sortedIndices[placement];
-            await sleep(placement * 1000);
-            markUserAsDone(playerIndex, { gameType: "DotsAndBoxes" });
-          }
-        }} />
-      );
-    }
-    else if (game === "Battleship") {
-      return <Battleship />
-    } 
-  
-    return null;
+  function handleGameComplete() {
+    setIsGameActive(false); // show results after game finishes
   }
 
-  const usersSortedByPts = users.slice().sort((a, b) => b.pts - a.pts);
-  const game = gameNum >= 0 ? games[gameNum] : "";
-  const nextGame = games[gameNum + 1];
+  function renderGame(game) {
+    switch (game) {
+      case "Sudoku":
+        return <Sudoku onGameComplete={handleGameComplete} onSetPlayer={setPlayer} players={players} />
+      case "Battleship":
+        return <Battleship onGameComplete={handleGameComplete} onSetPlayer={setPlayer} players={players} />
+      case "DotsAndBoxes":
+        return (
+          <DotsAndBoxes onComplete={async (scores) => {
+            const sortedIndices = scores
+              .map((_, index) => index)
+              .sort((a, b) => scores[b].boxes - scores[a].boxes);
+
+            for (let placement = 0; placement < sortedIndices.length; placement++) {
+              const playerIndex = sortedIndices[placement];
+              await sleep(placement * 1000);
+              markUserAsDone(playerIndex, { gameType: "DotsAndBoxes" });
+            }
+          }} />
+        );
+      case "Hangman":
+        return (
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <div style={{ border: '1px solid black', padding: '10px', margin: '10px' }}>
+                <HangMan onComplete={() => markUserAsDone(0)} />
+              </div>
+              <div style={{ border: '1px solid black', padding: '10px', margin: '10px' }}>
+                <HangMan onComplete={() => markUserAsDone(1)} />
+              </div>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <div style={{ border: '1px solid black', padding: '10px', margin: '10px' }}>
+                <HangMan onComplete={() => markUserAsDone(2)} />
+              </div>
+              <div style={{ border: '1px solid black', padding: '10px', margin: '10px' }}>
+                <HangMan onComplete={() => markUserAsDone(3)} />
+              </div>
+            </div>
+          </div>
+        );
+      default:
+        return null;
+    }
+
+  function setPlayer(player) {
+    setPlayers(prev => {
+      const newPlayers = prev.slice();
+      const idx = newPlayers.findIndex(u => u.id === player.id);
+      newPlayers[idx] = player;
+      return newPlayers
+    });
+  }
 
   return (
     <div style={style.container}>
       {isGameActive ? (
         <>
-          <div style={style.gameSection}>
-            {renderGame(game)}
-          </div>
-          <div style={style.userInfoSection}>
-            {users.map((user, idx) => (
-              <div key={idx} style={style.userInfoItem.item}>
-                <span style={{ flex: 1, marginRight: 8 }}>{user.name}</span>
-                <span style={style.userInfoItem.pts}>{user.pts} pts</span>
-                {user.done && <FaCircleCheck style={style.userInfoItem.doneIcon} />}
+          <div style={style.gameSection}>{renderGame(game)}</div>
+          <div style={style.playerInfoSection}>
+            {players.map((player, idx) => (
+              <div key={idx} style={style.playerInfoItem.item}>
+                <span style={{ flex: 1, marginRight: 8 }}>{player.name}</span>
+                <span style={style.playerInfoItem.pts}>{player.pts + player.ptsAwarded} pts</span>
+                {player.done && 
+                  (elimination 
+                    ? <FaCircleXmark style={{ ...style.playerInfoItem.doneIcon, color: "red" }} />
+                    : <FaCircleCheck style={style.playerInfoItem.doneIcon} />)
+                }
               </div>
             ))}
           </div>
@@ -240,20 +213,20 @@ const Game = () => {
       ) : (
         <div style={style.gameResultsContainer}>
           <div style={{ width: 600 }}>
-            {usersSortedByPts.map((user, idx) => {
+            {playersSortedByPts.map((player, idx) => {
               const placementColor = ["#ddc700", "#aaaaaa", "#905923", "#000000"][idx];
 
               return (
                 <div key={idx} style={{ marginBottom: 16 }}>
-                  <div style={style.gameResultsUser.top}>
-                    <span style={style.gameResultsUser.placeNum(placementColor)}>{idx + 1}</span>
-                    <span style={style.gameResultsUser.name}>{user.name}</span>
+                  <div style={style.gameResultsPlayer.top}>
+                    <span style={style.gameResultsPlayer.placeNum(placementColor)}>{idx + 1}</span>
+                    <span style={style.gameResultsPlayer.name}>{player.name}</span>
                     <div style={{ textAlign: "right", lineHeight: 1 }}>
-                      <p style={style.gameResultsUser.prevPoints}>{user.pts - user.ptsAwarded} pts</p>
-                      <p style={style.gameResultsUser.ptsAwarded}>+{user.ptsAwarded} pts</p>
+                      <p style={style.gameResultsPlayer.prevPoints}>{player.pts} pts</p>
+                      <p style={style.gameResultsPlayer.ptsAwarded}>+{player.ptsAwarded} pts</p>
                     </div>
                   </div>
-                  <p style={style.gameResultsUser.pts}>{user.pts} pts</p>
+                  <p style={style.gameResultsPlayer.pts}>{player.pts + player.ptsAwarded} pts</p>
                 </div>
               )
             })}
