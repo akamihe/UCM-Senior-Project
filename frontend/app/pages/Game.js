@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { FaCircleCheck, FaCircleXmark } from "react-icons/fa6";
 import Battleship from "./Battleship";
+import HangMan from "./Hangman";
+import DotsAndBoxes from "./DotsAndBoxes";
 import Sudoku from "./Sudoku";
 
 const style = {
@@ -73,7 +75,8 @@ const initialPlayers = [
   { id: 3, name: "jack_doe", you: true, pts: 0, done: false, ptsAwarded: 0 },
   { id: 4, name: "jill_doe", pts: 0, done: false, ptsAwarded: 0 }
 ]
-const games = ["Sudoku", "Battleship"];
+
+const games = ["Sudoku", "DotsAndBoxes", "HangMan", "Battleship"];
 
 const Game = () => {
   const [count, setCount] = useState(COUNTDOWN_LENGTH);
@@ -106,6 +109,23 @@ const Game = () => {
     }
   }
 
+  function markUserAsDone(idx, options = {}) {
+    setUsers(prev => {
+      const newUsers = prev.slice();
+      const doneCount = newUsers.filter(user => user.done).length;
+      let ptsAwarded = 4 - doneCount;
+      if (options.gameType === "DotsAndBoxes") {
+        ptsAwarded += 1;
+      }
+      newUsers[idx] = { ...newUsers[idx], done: true, ptsAwarded: Math.max(ptsAwarded, 1) };
+      return newUsers;
+    });
+  }
+
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
   function handleGameComplete() {
     setIsGameActive(false); // show results after game finishes
   }
@@ -116,10 +136,44 @@ const Game = () => {
         return <Sudoku onGameComplete={handleGameComplete} onSetPlayer={setPlayer} players={players} />
       case "Battleship":
         return <Battleship onGameComplete={handleGameComplete} onSetPlayer={setPlayer} players={players} />
+      case "DotsAndBoxes":
+        return (
+          <DotsAndBoxes onComplete={async (scores) => {
+            const sortedIndices = scores
+              .map((_, index) => index)
+              .sort((a, b) => scores[b].boxes - scores[a].boxes);
+
+            for (let placement = 0; placement < sortedIndices.length; placement++) {
+              const playerIndex = sortedIndices[placement];
+              await sleep(placement * 1000);
+              markUserAsDone(playerIndex, { gameType: "DotsAndBoxes" });
+            }
+          }} />
+        );
+      case "Hangman":
+        return (
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <div style={{ border: '1px solid black', padding: '10px', margin: '10px' }}>
+                <HangMan onComplete={() => markUserAsDone(0)} />
+              </div>
+              <div style={{ border: '1px solid black', padding: '10px', margin: '10px' }}>
+                <HangMan onComplete={() => markUserAsDone(1)} />
+              </div>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <div style={{ border: '1px solid black', padding: '10px', margin: '10px' }}>
+                <HangMan onComplete={() => markUserAsDone(2)} />
+              </div>
+              <div style={{ border: '1px solid black', padding: '10px', margin: '10px' }}>
+                <HangMan onComplete={() => markUserAsDone(3)} />
+              </div>
+            </div>
+          </div>
+        );
       default:
         return null;
     }
-  }
 
   function setPlayer(player) {
     setPlayers(prev => {
