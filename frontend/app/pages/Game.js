@@ -76,7 +76,7 @@ const initialPlayers = [
   { id: 4, name: "jill_doe", pts: 0, done: false, ptsAwarded: 0 }
 ]
 
-const games = ["Sudoku", "DotsAndBoxes", "HangMan", "Battleship"];
+const games = ["Sudoku", "Battleship", "DotsAndBoxes", "HangMan",];
 
 const Game = () => {
   const [count, setCount] = useState(COUNTDOWN_LENGTH);
@@ -110,15 +110,15 @@ const Game = () => {
   }
 
   function markUserAsDone(idx, options = {}) {
-    setUsers(prev => {
-      const newUsers = prev.slice();
-      const doneCount = newUsers.filter(user => user.done).length;
+    setPlayers(prev => {
+      const newPlayers = prev.slice();
+      const doneCount = newPlayers.filter(player => player.done).length;
       let ptsAwarded = 4 - doneCount;
       if (options.gameType === "DotsAndBoxes") {
         ptsAwarded += 1;
       }
-      newUsers[idx] = { ...newUsers[idx], done: true, ptsAwarded: Math.max(ptsAwarded, 1) };
-      return newUsers;
+      newPlayers[idx] = { ...newPlayers[idx], done: true, ptsAwarded: Math.max(ptsAwarded, 1) };
+      return newPlayers;
     });
   }
 
@@ -150,7 +150,7 @@ const Game = () => {
             }
           }} />
         );
-      case "Hangman":
+      case "HangMan":
         return (
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -174,6 +174,7 @@ const Game = () => {
       default:
         return null;
     }
+  }
 
   function setPlayer(player) {
     setPlayers(prev => {
