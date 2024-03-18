@@ -7,6 +7,7 @@ import ucmo.senior_project.resource.GameData;
 import ucmo.senior_project.resource.gametypes.BattleshipData;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class Battleship implements Game {
     private HashMap<TempUser, BattleshipBoard> board = new HashMap<>();
@@ -22,6 +23,11 @@ public class Battleship implements Game {
 
     @Override
     public void updateSystem() {
+
+    }
+
+    @Override
+    public void init(List<TempUser> users) {
 
     }
 }

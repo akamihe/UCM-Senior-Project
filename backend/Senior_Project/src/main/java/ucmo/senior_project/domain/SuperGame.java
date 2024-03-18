@@ -56,6 +56,7 @@ public class SuperGame implements Runnable{
         int rnd = new Random().nextInt(loadableGames.length);
         try {
             this.currentGame = (Game)loadableGames[rnd].getDeclaredConstructor().newInstance();
+            this.currentGame.init(this.users);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
