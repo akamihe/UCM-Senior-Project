@@ -23,6 +23,8 @@ public class TempUser {
     private String username;
     private String code;
     private String gameCode;
+    private double currentScore = 0;
+
     public long lastInteraction = 0;
 
     public TempUser(SuperGame instance, String username, String gameCode) {
