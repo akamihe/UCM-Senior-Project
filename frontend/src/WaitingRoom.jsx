@@ -37,7 +37,8 @@ const style = {
     padding: "8px 16px", 
     borderRadius: 8,
     opacity: disabled ? 0.5 : 1,
-    pointerEvents: disabled ? "none" : "auto"
+    pointerEvents: disabled ? "none" : "auto",
+    border: "none"
   }),
   requirementText: { marginTop: 16, fontSize: 15, color: "dimgray" }
 }

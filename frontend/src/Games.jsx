@@ -4,6 +4,7 @@ import { AiOutlineDisconnect } from "react-icons/ai";
 import Sudoku from "./Sudoku"
 import Battleship from "./Battleship"
 import socketClient from "./socketClient"
+import Pictionary from "./Pictionary";
 
 const style = {
   gameContainer: { flex: 1, padding: 16, display: 'flex', alignItems: "center" },
@@ -200,6 +201,8 @@ function Game({ connected, players, game }) {
       return <Sudoku connected={connected} players={players} />
     case "Battleship":
       return <Battleship connected={connected} players={players} />
+    case "Pictionary":
+      return <Pictionary connected={connected} players={players} />
     default:
       return null;
   }

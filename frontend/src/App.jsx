@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
+import socketClient from "./socketClient"
 import WaitingRoom from './WaitingRoom';
 import Games from './Games';
-import socketClient from "./socketClient"
 
 if (import.meta.hot) {
   import.meta.hot.accept(() => {
