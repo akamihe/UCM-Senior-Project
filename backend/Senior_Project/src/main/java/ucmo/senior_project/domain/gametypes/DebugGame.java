@@ -7,6 +7,7 @@ import ucmo.senior_project.resource.GameData;
 import ucmo.senior_project.resource.gametypes.DebugGameData;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -36,5 +37,10 @@ public class DebugGame implements Game {
     @Override
     public void updateSystem() {
 
+    }
+
+    @Override
+    public void init(List<TempUser> users) {
+        users.forEach((tempUser -> {this.userStrings.put(tempUser, "");}));
     }
 }

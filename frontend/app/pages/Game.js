@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { FaCircleCheck, FaCircleXmark } from "react-icons/fa6";
 import Battleship from "./Battleship";
-import HangMan from "./Hangman";
+import HangMan from "./HangMan";
 import DotsAndBoxes from "./DotsAndBoxes";
 import Sudoku from "./Sudoku";
 

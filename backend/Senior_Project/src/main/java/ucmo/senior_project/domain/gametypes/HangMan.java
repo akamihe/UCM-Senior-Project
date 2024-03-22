@@ -6,6 +6,8 @@ import ucmo.senior_project.domain.TempUser;
 import ucmo.senior_project.resource.GameData;
 import ucmo.senior_project.resource.gametypes.HangManData;
 
+import java.util.List;
+
 public class HangMan implements Game {
     @Override
     public GameData getGameData(TempUser user) {
@@ -19,6 +21,11 @@ public class HangMan implements Game {
 
     @Override
     public void updateSystem() {
+
+    }
+
+    @Override
+    public void init(List<TempUser> users) {
 
     }
 }

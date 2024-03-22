@@ -11,12 +11,15 @@ public class UserData {
     private int id;
     private String username;
 
+    private double score;
+
     private boolean isGameMaster = false;
 
     public UserData(TempUser user) {
         this(user, user.getInstance().getGameMaster() == user);
     }
     public UserData(TempUser user, boolean isGameMaster) {
+        this.score = user.getCurrentScore();
         this.id = user.getInstanceId();
         this.username = user.getUsername();
         this.isGameMaster = isGameMaster;
