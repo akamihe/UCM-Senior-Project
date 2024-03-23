@@ -91,7 +91,7 @@ const style = {
   }
 }
 
-const games = ["Sudoku", "Battleship"];
+const games = ["Sudoku", "Battleship", "Pictionary"];
 const placementColors = ["gold", "silver", "sienna"];
 const COUNTDOWN_DURATION = 10;
 
