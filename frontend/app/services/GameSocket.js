@@ -86,7 +86,7 @@ export default class GameSocket {
         for(var i = 0; i < this.activeSubscriptions.length; i++) {
             this.unsubscribe(this.activeSubscriptions[i]);
         }
-        this.activeSubscriptions = [];
+        this.activeSubscriptions = new Map();
     }
     sendWakeMessageToServer(data) {
         this.sendMessageToServer('/broker/wake', data);
@@ -102,6 +102,21 @@ export default class GameSocket {
     subscribeToDebugGame(callback) {
         this.subscribe("/game/debug/listen", callback);
     }
+
+    //sudoku game
+
+    subscribeToSudokuGame(callback) {
+        this.subscribe("/game/sudoku/listen", callback);
+    }
+
+    sudokuGameDataSet(x, y, value) {
+        this.sendMessageToServer("/game/sudoku/setValue", {x:x, y:y, value:value});
+    }
+
+
+
+
+
     static getGameSocketInstance() { 
         let tempUser = JSON.parse(sessionStorage.getItem(USER_NAME_TEMP_SESSION_ATTRIBUTE_NAME));
         if(!this.gameSocket) {

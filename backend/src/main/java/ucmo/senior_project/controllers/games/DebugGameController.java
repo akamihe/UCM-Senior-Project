@@ -24,7 +24,7 @@ import java.util.Map;
 public class DebugGameController extends AbstractGameBrokerController {
 
     @MessageMapping("/game/debug/input/{code}")
-    @SendTo("/game/debug/input/{code}")
+    @SendTo("/game/debug/listen/{code}")
     public DebugGameData handleUserInput(@DestinationVariable String code, JsonNode data) {
         if(this.activateUser(code)) {
             DebugGame debugGame = this.getCurrentGame(DebugGame.class);

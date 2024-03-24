@@ -34,12 +34,16 @@ public class DebugGame implements Game {
         }
     }
     @Override
-    public void updateSystem() {
-
+    public boolean updateSystem() {
+        return true;
     }
 
     @Override
     public void init(List<GameUser> users) {
         users.forEach((gameUser -> {this.userStrings.put(gameUser, "");}));
+    }
+    @Override
+    public void finish(List<GameUser> users) {
+
     }
 }

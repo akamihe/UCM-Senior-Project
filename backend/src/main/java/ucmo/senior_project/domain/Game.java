@@ -7,6 +7,8 @@ import java.util.List;
 public interface Game {
     GameData getGameData(GameUser user);
     void updateInput(GameUser user, JsonNode data);
-    void updateSystem();
+    boolean updateSystem();
     void init(List<GameUser> users);
+
+    void finish(List<GameUser> users);
 }

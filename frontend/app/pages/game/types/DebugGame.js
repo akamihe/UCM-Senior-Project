@@ -26,6 +26,7 @@ function DebugGame({socket, gameState}) {
     const [debugGameData, setdebugGameData] = useState([]);
     const hasLoaded = useRef(false);
     if(hasLoaded.current == false) {
+        socket.clearSubscriptions();
         socket.subscribeToDebugGame((e)=> {
             setdebugGameData(e.data);
         });

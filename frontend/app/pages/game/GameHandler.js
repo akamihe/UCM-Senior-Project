@@ -27,6 +27,16 @@ function GameHandler() {
     if(!gameState.users) {
         return <div></div>
     }
+    if(gameState.betweenGames) {
+       return  <div>
+            Between games, this is a place holder, should be about 10 seconds
+        </div>
+    }
+    else if(gameState.gameFinished) {
+        return <div>
+            all games are finished, this is a place holder
+        </div>
+    }
     switch(gameState.gameType) {
         case 'DebugGame':
             return <DebugGame socket={socket} gameState={gameState} />

@@ -31,8 +31,8 @@ public class GameBrokerController extends AbstractGameBrokerController {
 
 	@MessageMapping("/broker/start/{code}")
 	public void begin(@DestinationVariable String code) throws Exception {
-		if (this.activateUser(code)) {
-			this.gameBroker.beginNewGame();
+		if (this.activateUser(code) && this.user == gameBroker.getGameMaster()) {
+			this.gameBroker.beginGame();
 		}
 	}
 }

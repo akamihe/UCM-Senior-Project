@@ -22,12 +22,16 @@ public class Battleship implements Game {
     }
 
     @Override
-    public void updateSystem() {
-
+    public boolean updateSystem() {
+        return false;
     }
 
     @Override
     public void init(List<GameUser> users) {
+
+    }
+    @Override
+    public void finish(List<GameUser> users) {
 
     }
 }

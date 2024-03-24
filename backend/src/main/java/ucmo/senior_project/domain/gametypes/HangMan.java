@@ -20,12 +20,16 @@ public class HangMan implements Game {
     }
 
     @Override
-    public void updateSystem() {
-
+    public boolean updateSystem() {
+        return true;
     }
 
     @Override
     public void init(List<GameUser> users) {
+
+    }
+    @Override
+    public void finish(List<GameUser> users) {
 
     }
 }

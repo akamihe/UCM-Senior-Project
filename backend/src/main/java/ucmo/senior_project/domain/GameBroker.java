@@ -11,16 +11,22 @@ import java.util.*;
 public class GameBroker implements Runnable{
     public static Class[] loadableGames = new Class[]
     {
-        DebugGame.class,
+        //DebugGame.class,
         //Battleship.class,
         //HangMan.class,
-        //Sudoku.class,
+        Sudoku.class,
         //TicTacToe.class,
     };
 
     public static Map<String, GameBroker> activeGames = Collections.synchronizedMap(new HashMap<>());
 
     private List<GameUser> users = new ArrayList<>();
+
+    private LinkedList<Game> nextGames = new LinkedList<>();
+
+    public static final long TIME_BETWEEN_GAMES = 1000*10; //10 seconds;
+
+    private long nextGameStartTime = 0;
 
     private GameBroker(String code, AuthUser user) {
         this.code = code;
@@ -36,14 +42,24 @@ public class GameBroker implements Runnable{
     public synchronized void wake(GameUser user) {
 
     }
+    public boolean isBetweenGames() {
+        return this.nextGameStartTime != 0 && !this.nextGames.isEmpty() && this.currentGame == null;
+    }
+    public boolean isFinished() {
+        return nextGameStartTime != 0 && this.nextGames.isEmpty();
+    }
 
-    public synchronized void beginNewGame() {
-        int rnd = new Random().nextInt(loadableGames.length);
-        try {
-            this.currentGame = (Game)loadableGames[rnd].getDeclaredConstructor().newInstance();
-            this.currentGame.init(this.users);
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new RuntimeException(e);
+    public synchronized void beginGame() {
+        for(int i = 0; i < 2; i ++) {
+            int rnd = new Random().nextInt(loadableGames.length); //todo, allow selcetion of what games to play.
+            try {
+                this.nextGames.add((Game) loadableGames[rnd].getDeclaredConstructor().newInstance());
+                //this.currentGame = (Game);
+                //this.currentGame.init(this.users);
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                     NoSuchMethodException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
     public synchronized GameUser newgameUser(String name) {
@@ -71,9 +87,19 @@ public class GameBroker implements Runnable{
     }
     public synchronized boolean maintainGame() {
         if (this.currentGame != null) {
-            this.currentGame.updateSystem();
+            if(!this.currentGame.updateSystem()) {
+                this.currentGame.finish(this.users);
+                this.currentGame = null;
+                this.nextGameStartTime = System.currentTimeMillis() + TIME_BETWEEN_GAMES;
+            }
         }
-        this.users.removeIf(GameUser::isInactive);
+        //handle next game protocols
+        else if (this.nextGameStartTime < System.currentTimeMillis()){
+            if(!this.nextGames.isEmpty()) {
+                this.currentGame = this.nextGames.pop();
+                this.currentGame.init(this.users);
+            }
+        }
         Collection<GameUser> toRemove = this.users.stream().filter(GameUser::isInactive).toList();
         this.users.removeAll(toRemove); //remove from game
         toRemove.forEach(GameUser::destroy); //remove from gameUser container
