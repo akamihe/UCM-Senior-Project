@@ -1,7 +1,7 @@
 const API_URL = 'https://localhost:8443'
 
 export const USER_NAME_SESSION_ATTRIBUTE_NAME = 'authenticatedUser'
-export const USER_NAME_TEMP_SESSION_ATTRIBUTE_NAME = 'tempUser'
+export const USER_NAME_TEMP_SESSION_ATTRIBUTE_NAME = 'gameUser'
 
 export default class ApiCallerService {
     static getHeader(authOveride=false) {

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import MultiScreens from "./../components/MultiScreens"
+import MultiScreens from "/app/components/MultiScreens"
 
 const style = {
   gameInstanceRow: { display: "flex", flex: 1, height: "50%" },

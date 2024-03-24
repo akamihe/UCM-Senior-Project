@@ -1,25 +1,29 @@
 
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
-import GameSocket from '../../services/GameSocket';
+import GameSocket from '/app/services/GameSocket';
 import DebugGame from './types/DebugGame';
 import Battleship from './types/Battleship';
 import HangMan from './types/HangMan';
 import Sodoku from './types/Sudoku';
 import TicTacToe from './types/TicTacToe';
 import GameWaitingRoom from './types/GameWaitingRoom';
-import AuthService from '../../services/AuthService';
+import AuthService from '/app/services/AuthService';
 
 
 function GameHandler() {
     const [socket] = useState(GameSocket.getGameSocketInstance());
     const [gameState, setGameState] = useState({});
-    socket.bindGameInstanceUpdate(function(game) {
-        setGameState(game);
-    });
-    socket.setOnDisconnect(function() {
-        AuthService.logout()
-    });
+    const hasLoaded = useRef(false);
+    if(hasLoaded.current == false) {
+        socket.bindGameInstanceUpdate(function(game) {
+            setGameState(game);
+        });
+        socket.setOnDisconnect(function() {
+            AuthService.logout()
+        });
+        hasLoaded.current = true;
+    }
     if(!gameState.users) {
         return <div></div>
     }

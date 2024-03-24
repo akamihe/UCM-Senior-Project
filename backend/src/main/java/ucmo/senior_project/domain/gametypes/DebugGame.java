@@ -2,21 +2,20 @@ package ucmo.senior_project.domain.gametypes;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import ucmo.senior_project.domain.Game;
-import ucmo.senior_project.domain.TempUser;
-import ucmo.senior_project.resource.GameData;
-import ucmo.senior_project.resource.gametypes.DebugGameData;
+import ucmo.senior_project.domain.GameUser;
+import ucmo.senior_project.resource.game.GameData;
+import ucmo.senior_project.resource.game.types.DebugGameData;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class DebugGame implements Game {
-    private HashMap<TempUser, String> userStrings = new HashMap<>();
+    private HashMap<GameUser, String> userStrings = new HashMap<>();
     @Override
-    public GameData getGameData(TempUser user) {
+    public DebugGameData getGameData(GameUser user) {
         HashMap<String, String> asData = new HashMap<>();
-        for (Map.Entry<TempUser, String> entry : userStrings.entrySet()) {
+        for (Map.Entry<GameUser, String> entry : userStrings.entrySet()) {
             asData.put(
                 entry.getKey().getUsername(),
                 entry.getValue()
@@ -28,7 +27,7 @@ public class DebugGame implements Game {
     }
 
     @Override
-    public void updateInput(TempUser user, JsonNode data) {
+    public void updateInput(GameUser user, JsonNode data) {
         JsonNode node = data.findValue("test");
         if(node != null) {
             this.userStrings.put(user, node.asText());
@@ -40,7 +39,7 @@ public class DebugGame implements Game {
     }
 
     @Override
-    public void init(List<TempUser> users) {
-        users.forEach((tempUser -> {this.userStrings.put(tempUser, "");}));
+    public void init(List<GameUser> users) {
+        users.forEach((gameUser -> {this.userStrings.put(gameUser, "");}));
     }
 }

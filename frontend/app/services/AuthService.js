@@ -2,7 +2,7 @@ import ApiCallerService, { USER_NAME_SESSION_ATTRIBUTE_NAME, USER_NAME_TEMP_SESS
 
 export default class AuthService {
     static login(username, password) {
-        return ApiCallerService.postNoAuth('gameuser/login', {'username': username, 'password': password})
+        return ApiCallerService.postNoAuth('authuser/login', {'username': username, 'password': password})
             .then(res => res.json())
             .then(res=> {sessionStorage.setItem(USER_NAME_SESSION_ATTRIBUTE_NAME, JSON.stringify(res))})
             .then(res => {
@@ -12,7 +12,7 @@ export default class AuthService {
             })
     }
     static createUser(username, password) {
-        return ApiCallerService.postNoAuth('gameuser/join', {'username': username, 'password': password})
+        return ApiCallerService.postNoAuth('authuser/join', {'username': username, 'password': password})
             .then(res => res.json())
             .then(res=> {sessionStorage.setItem(USER_NAME_SESSION_ATTRIBUTE_NAME, JSON.stringify(res))})
             .then(res => {
@@ -20,7 +20,7 @@ export default class AuthService {
             })
     }
     static createGame() {
-        return ApiCallerService.post('gameuser/game/create')
+        return ApiCallerService.post('authuser/game/create')
             .then(res => res.json())
             .then(res=> {sessionStorage.setItem(USER_NAME_TEMP_SESSION_ATTRIBUTE_NAME, JSON.stringify(res))})
             .then(res => {

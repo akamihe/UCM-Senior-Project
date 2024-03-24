@@ -1,11 +1,9 @@
-package ucmo.senior_project.resource.gametypes;
+package ucmo.senior_project.resource.game.types;
 
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import ucmo.senior_project.domain.gametypes.Sudoku;
-import ucmo.senior_project.resource.GameData;
+import ucmo.senior_project.resource.game.GameData;
 
 @Data
 public class SudokuData implements GameData {

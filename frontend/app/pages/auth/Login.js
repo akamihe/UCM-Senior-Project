@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
-import AuthService from '../../services/AuthService';
+import AuthService from '/app/services/AuthService';
 
 const ErrorForm = props => {
     return (

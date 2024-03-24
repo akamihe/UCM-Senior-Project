@@ -2,9 +2,9 @@ package ucmo.senior_project.domain.gametypes;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import ucmo.senior_project.domain.Game;
-import ucmo.senior_project.domain.TempUser;
-import ucmo.senior_project.resource.GameData;
-import ucmo.senior_project.resource.gametypes.SudokuData;
+import ucmo.senior_project.domain.GameUser;
+import ucmo.senior_project.resource.game.GameData;
+import ucmo.senior_project.resource.game.types.SudokuData;
 
 import java.util.List;
 
@@ -14,12 +14,12 @@ public class Sudoku implements Game {
     private long endTime = 0;
     private long lastUpdate = 0;
     @Override
-    public GameData getGameData(TempUser user) {
+    public GameData getGameData(GameUser user) {
         return new SudokuData(this.endTime);
     }
 
     @Override
-    public void updateInput(TempUser user, JsonNode data) {
+    public void updateInput(GameUser user, JsonNode data) {
 
     }
 
@@ -36,7 +36,7 @@ public class Sudoku implements Game {
     }
 
     @Override
-    public void init(List<TempUser> users) {
+    public void init(List<GameUser> users) {
 
     }
 }

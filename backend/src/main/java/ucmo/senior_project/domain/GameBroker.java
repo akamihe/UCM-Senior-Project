@@ -5,12 +5,10 @@ import lombok.Data;
 import ucmo.senior_project.domain.gametypes.*;
 
 import java.lang.reflect.InvocationTargetException;
-import java.nio.charset.Charset;
 import java.util.*;
-import java.util.stream.Stream;
 
 @Data
-public class SuperGame implements Runnable{
+public class GameBroker implements Runnable{
     public static Class[] loadableGames = new Class[]
     {
         DebugGame.class,
@@ -20,36 +18,23 @@ public class SuperGame implements Runnable{
         //TicTacToe.class,
     };
 
-    public static Map<String, SuperGame> activeGames = Collections.synchronizedMap(new HashMap<>());
+    public static Map<String, GameBroker> activeGames = Collections.synchronizedMap(new HashMap<>());
 
-    private List<TempUser> users = new ArrayList<>();
+    private List<GameUser> users = new ArrayList<>();
 
-    private SuperGame(String code, GameUser user) {
+    private GameBroker(String code, AuthUser user) {
         this.code = code;
-        this.gameMaster = new TempUser(this, user, this.code);
+        this.gameMaster = new GameUser(this, user, this.code);
         this.users.add(this.gameMaster);
         activeGames.put(code, this);
     }
 
-    private TempUser gameMaster;
+    private GameUser gameMaster;
     private Game currentGame = null;
     private String code;
 
-    public synchronized void updateInput(TempUser user, JsonNode userInputs) {
-        if (currentGame != null) {
-            currentGame.updateInput(user, userInputs);
-        }
-        JsonNode adminNode = userInputs.get("admin");
-        if(adminNode != null && user == gameMaster) {
-            JsonNode gameState = adminNode.get("state");
-            if(gameState != null) {
-                switch (gameState.asText()) {
-                    case "start":
-                        this.beginNewGame();
-                        break;
-                }
-            }
-        }
+    public synchronized void wake(GameUser user) {
+
     }
 
     public synchronized void beginNewGame() {
@@ -61,16 +46,16 @@ public class SuperGame implements Runnable{
             throw new RuntimeException(e);
         }
     }
-    public synchronized TempUser newTempUser(String name) {
-        TempUser user = new TempUser(this, name, this.code);
+    public synchronized GameUser newgameUser(String name) {
+        GameUser user = new GameUser(this, name, this.code);
         this.users.add(user);
         return user;
     }
 
-    public static SuperGame fetchGame(String code) {
+    public static GameBroker fetchGame(String code) {
         return activeGames.get(code);
     }
-    public static SuperGame setupGame(GameUser user) {
+    public static GameBroker setupGame(AuthUser user) {
         int leftLimit = 97; // letter 'a'
         int rightLimit = 122; // letter 'z'
         int targetStringLength = 10;
@@ -80,18 +65,18 @@ public class SuperGame implements Runnable{
                 .limit(targetStringLength)
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                 .toString();
-        SuperGame superGame = new SuperGame(generatedString, user);
-        new Thread(superGame).start();
-        return superGame;
+        GameBroker gameBroker = new GameBroker(generatedString, user);
+        new Thread(gameBroker).start();
+        return gameBroker;
     }
     public synchronized boolean maintainGame() {
         if (this.currentGame != null) {
             this.currentGame.updateSystem();
         }
-        this.users.removeIf(TempUser::isInactive);
-        Collection<TempUser> toRemove = this.users.stream().filter(TempUser::isInactive).toList();
+        this.users.removeIf(GameUser::isInactive);
+        Collection<GameUser> toRemove = this.users.stream().filter(GameUser::isInactive).toList();
         this.users.removeAll(toRemove); //remove from game
-        toRemove.forEach(TempUser::destroy); //remove from tempUser container
+        toRemove.forEach(GameUser::destroy); //remove from gameUser container
         return !this.users.isEmpty(); //end game if all users have left
     }
     @Override

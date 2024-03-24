@@ -1,4 +1,4 @@
-package ucmo.senior_project.resource;
+package ucmo.senior_project.resource.input;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

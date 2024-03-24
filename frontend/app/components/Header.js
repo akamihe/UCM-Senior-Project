@@ -1,7 +1,7 @@
 import { Container, Nav, Navbar } from 'react-bootstrap';
 import {Link} from 'react-router-dom';
 
-import AuthService from '../services/AuthService';
+import AuthService from '/app/services/AuthService';
 
 function Options() {
   if(AuthService.isLoggedIn() || AuthService.isGameAuth()) {

@@ -1,13 +1,14 @@
-package ucmo.senior_project.resource.gametypes;
+package ucmo.senior_project.resource.game.types;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import ucmo.senior_project.resource.GameData;
+import ucmo.senior_project.resource.game.GameData;
 
 import java.util.HashMap;
+import java.util.Map;
 
 @Data
 @AllArgsConstructor
 public class DebugGameData implements GameData {
-    private HashMap<String, String> data;
+    private Map<String, String> data;
 }

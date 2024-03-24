@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Form, Button } from 'react-bootstrap';
-import AuthService from '../../../services/AuthService';
+import AuthService from '/app/services/AuthService';
   
 const ErrorForm = props => {
     return (
@@ -10,21 +10,29 @@ const ErrorForm = props => {
     );
 };
 
-function UserBody({gameState}) {
-    var game = gameState.currentGame;
+function UserBody({game}) {
+    if(!game || game.length == 0) {
+        return <div></div>
+    }
     return <div>
-        {Object.keys(game.data).map(function(name){
-            return <div key={name}> {name}: {game.data[name]}</div>;
+        {Object.keys(game).map(function(name){
+            return <div key={name}> {name}: {game[name]}</div>;
         })}
     </div>
 }
 
 function DebugGame({socket, gameState}) {
     const [error, setError] = useState("");
-    const [data, setData] = useState({ test: ''});
-    
+    const [debugGameData, setdebugGameData] = useState([]);
+    const hasLoaded = useRef(false);
+    if(hasLoaded.current == false) {
+        socket.subscribeToDebugGame((e)=> {
+            setdebugGameData(e.data);
+        });
+        hasLoaded.current = true;
+    }
     const changeValue = (e) => {
-        socket.sendMessageToServer({test: e.target.value})
+        socket.debugGameInput({test: e.target.value})
     }
     
     return <div className="row justify-content-lg-center h-100 p-5">
@@ -49,7 +57,7 @@ function DebugGame({socket, gameState}) {
                                         required
                                     />
                                     All Other Users Inputs
-                                    <UserBody gameState={gameState} />
+                                    <UserBody game={debugGameData} />
                                 </Form.Group>
                             </Form>
                             <ErrorForm error={error} />

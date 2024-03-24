@@ -1,16 +1,17 @@
-package ucmo.senior_project.resource;
+package ucmo.senior_project.resource.game;
 
 import lombok.Data;
 import ucmo.senior_project.domain.Game;
-import ucmo.senior_project.domain.SuperGame;
-import ucmo.senior_project.domain.TempUser;
+import ucmo.senior_project.domain.GameBroker;
+import ucmo.senior_project.domain.GameUser;
+import ucmo.senior_project.resource.auth.UserData;
+import ucmo.senior_project.resource.auth.UserDataInterface;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class SuperGameData implements UserDataInterface {
-    private GameData currentGame;
+public class GameBrokerData implements UserDataInterface {
     private String gameType;
     private String code;
     private List<UserData> users = new ArrayList<>();
@@ -18,14 +19,13 @@ public class SuperGameData implements UserDataInterface {
     private UserData self;
     private UserData gameMaster;
 
-    public SuperGameData(SuperGame game, TempUser user) {
+    public GameBrokerData(GameBroker game, GameUser user) {
         this.code = game.getCode();
         Game currentGame = game.getCurrentGame();
         if(currentGame != null) {
-            this.currentGame = currentGame.getGameData(user);
             this.gameType = currentGame.getClass().getSimpleName();
         }
-        this.users.addAll(game.getUsers().stream().map((TempUser data) -> new UserData(data, game.getGameMaster() == data)).toList());
+        this.users.addAll(game.getUsers().stream().map((GameUser data) -> new UserData(data, game.getGameMaster() == data)).toList());
         this.self = new UserData(user, game.getGameMaster() == user);
         this.gameMaster = new UserData(game.getGameMaster(), true);
     }

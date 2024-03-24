@@ -57,7 +57,7 @@ export default function WaitingRoom(data) {
     var _socket = data.socket;
     var gameState = data.gameState;
     function handleSubmit(e) {
-        _socket.sendMessageToServer({admin:{'state':'start'}})
+        _socket.startGame();
     }
 
     var users = gameState.users

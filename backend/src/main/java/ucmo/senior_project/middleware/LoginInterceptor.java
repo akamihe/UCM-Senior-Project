@@ -7,15 +7,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-import ucmo.senior_project.domain.TempUser;
-import ucmo.senior_project.service.GameUserService;
+import ucmo.senior_project.domain.GameUser;
+import ucmo.senior_project.service.AuthUserService;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class LoginInterceptor implements HandlerInterceptor {
 
-	private final GameUserService gameUserService;
+	private final AuthUserService gameUserService;
 
 	@Override
 	public boolean preHandle(HttpServletRequest request,
@@ -27,7 +27,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 		}
 
 		String token = request.getHeader("gameToken");
-		if(token != null && TempUser.fetchTempUser(token) != null) {
+		if(token != null && GameUser.fetchGameUser(token) != null) {
 			return true;
 		}
 

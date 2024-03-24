@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import SudokuPuzzle from "./SudokuPuzzle";
-import MultiScreens from "./../components/MultiScreens"
+import MultiScreens from "/app/components/MultiScreens"
 
 const style = {
   gameInstanceRow: { display: "flex", flex: 1, height: "50%" },

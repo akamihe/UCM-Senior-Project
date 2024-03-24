@@ -1,4 +1,4 @@
-package ucmo.senior_project.resource;
+package ucmo.senior_project.resource.game.types;
 
 public class GameDebugObject {
     private double value;

@@ -6,13 +6,11 @@ import Header from './components/Header'
 import {Container} from 'react-bootstrap';
 import Login from './pages/auth/Login';
 import Join from './pages/auth/Join';
-import Debug from './pages/debug/debug'
-import GameDebug from './pages/game/Debug'
 import ActiveGame from './pages/game/GameHandler'
 import SetupGame from './pages/game/SetupGame'
 import GameJoin from './pages/auth/GameJoin'
-import WaitingRoom from './pages/WaitingRoom'
-import Game from './pages/Game'
+import WaitingRoom from './pages/debug/WaitingRoom'
+import Game from './pages/debug/Game'
 import {Route, BrowserRouter, Routes} from 'react-router-dom'
 import AuthService from './services/AuthService';
 
@@ -27,7 +25,6 @@ function Authenticated() {
   <Routes>
      {AuthService.isGameAuth() &&
          <>
-           <Route path="/game/debug" element={<GameDebug />}/>
            <Route path="/game/active" element={<ActiveGame />}/>
          </>
      }

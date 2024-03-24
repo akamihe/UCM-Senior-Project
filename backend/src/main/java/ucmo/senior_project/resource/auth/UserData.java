@@ -1,8 +1,8 @@
-package ucmo.senior_project.resource;
+package ucmo.senior_project.resource.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import ucmo.senior_project.domain.TempUser;
+import ucmo.senior_project.domain.GameUser;
 
 
 @Data
@@ -15,10 +15,10 @@ public class UserData {
 
     private boolean isGameMaster = false;
 
-    public UserData(TempUser user) {
+    public UserData(GameUser user) {
         this(user, user.getInstance().getGameMaster() == user);
     }
-    public UserData(TempUser user, boolean isGameMaster) {
+    public UserData(GameUser user, boolean isGameMaster) {
         this.score = user.getCurrentScore();
         this.id = user.getInstanceId();
         this.username = user.getUsername();
