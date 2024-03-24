@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 const GameContainerStyle = {
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'center',
-    height: '100vh',
+    width: 'inherit',
+    paddingTop: '25px'
   };
   
   const DotStyle = {
