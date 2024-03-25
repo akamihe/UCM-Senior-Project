@@ -141,6 +141,7 @@ export default function Sudoku({ connected, players }) {
         }
       }
       
+      socketClient.publish({ destination: "/app/cancelTimer" });
       socketClient.publish({ destination: "/app/updatePlayers", body: JSON.stringify(newPlayers) });
     }
   }, [isSolved, timerEnded])

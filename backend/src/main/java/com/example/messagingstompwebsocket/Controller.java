@@ -18,7 +18,7 @@ public class Controller implements ApplicationListener<SessionDisconnectEvent> {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
-    private Timer timer = new Timer();
+    private Timer timer = null;
 
     private final int MAX_PLAYERS = 5;
     private List<Player> players = new ArrayList<>();
@@ -28,6 +28,7 @@ public class Controller implements ApplicationListener<SessionDisconnectEvent> {
 
     private SudokuPuzzle sudokuPuzzle = null;
     private BattleshipGameData battleshipGameData = null;
+    private PictionaryGameData pictionaryGameData = null;
 
     @MessageMapping("/battleshipInitGame")
     @SendTo("/topic/battleshipInitGame")
@@ -79,6 +80,17 @@ public class Controller implements ApplicationListener<SessionDisconnectEvent> {
     public BattleshipGameData battleshipUpdateGame(BattleshipGameData newGameData) throws Exception {
         battleshipGameData = newGameData;
         return battleshipGameData;
+    }
+
+    // To avoid an IllegalStateException, there must be some way of checking that
+    // the timer is already cancelled. The Timer class does not have that, so the timer
+    // is set to null after the cancel method executes. See schedule(task, seconds) below.
+    @MessageMapping("/cancelTimer")
+    public void cancelTimer() {
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
     }
 
     @MessageMapping("/clearPlayers")
@@ -170,6 +182,28 @@ public class Controller implements ApplicationListener<SessionDisconnectEvent> {
             messagingTemplate.convertAndSend("/topic/playerDisconnected", players);
     }
 
+    @MessageMapping("/pictionaryInitGame")
+    @SendTo("/topic/pictionaryInitGame")
+    public PictionaryGameData pictionaryInitGame(String word) {
+        if (pictionaryGameData == null) {
+            pictionaryGameData = new PictionaryGameData(
+                    word,
+                    0,
+                    new PictionaryStroke[]{},
+                    null,
+                    new boolean[players.size()]
+            );
+        }
+        return pictionaryGameData;
+    }
+
+    @MessageMapping("/pictionaryUpdateGame")
+    @SendTo("/topic/pictionaryUpdateGame")
+    public PictionaryGameData pictionaryUpdateGame(PictionaryGameData gameData) {
+        pictionaryGameData = gameData;
+        return pictionaryGameData;
+    }
+
     @MessageMapping("/register")
     public void register(@Header("simpSessionId") String sessionId) throws Exception {
         String name = "Player_" + sessionId.substring(0, 4);
@@ -186,19 +220,14 @@ public class Controller implements ApplicationListener<SessionDisconnectEvent> {
     }
 
     private void resetGameState() {
-        // To avoid an IllegalStateException, there must be some way of checking that
-        // the timer is already cancelled. The Timer class does not have that, so the timer
-        // is set to null after the cancel method executes. See schedule(task, seconds) below.
-        if (timer != null) {
-            timer.cancel();
-            timer = null;
-        }
+        cancelTimer();
 
         for (Player player : players)
             player.setDone(false);
 
         sudokuPuzzle = null;
         battleshipGameData = null;
+        pictionaryGameData = null;
     }
 
     private void schedule(TimerTask task, long seconds) {

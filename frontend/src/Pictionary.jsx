@@ -1,72 +1,205 @@
 import { useState, useRef, useEffect } from "react";
-import { Stage, Layer, Line } from "react-konva"
+import { Stage, Layer, Line, Circle } from "react-konva"
 import { FaEraser, FaPenClip } from "react-icons/fa6";
 import socketClient from "./socketClient";
 
-const wordBank = ["Apple", "Banana", "Car", "Dog", "Elephant", "Fish", "Guitar", "House", "Ice Cream", "Jupiter", "Kite", "Lion", "Moon", "Nest", "Octopus", "Penguin", "Queen", "Rocket", "Sun", "Tree", "Umbrella", "Violin", "Watermelon", "Xylophone", "Yacht", "Zebra", "Ant", "Basketball", "Cat", "Dolphin", "Eagle", "Fire", "Giraffe", "Helicopter", "Island", "Jellyfish", "Kangaroo", "Lemon", "Mountain", "Notebook", "Owl", "Piano", "Rocket", "Rabbit", "Spider", "Train", "Unicorn", "Violin", "Waterfall", "X-ray", "Yoyo", "Zookeeper"];
+const containerStyle = { display: "flex", justifyContent: "center", width: "100%", padding: 16 };
+const boardSectionStyle = { border: "1px solid lightgray", marginRight: 24, flexShrink: 0 };
+const boardBottomStyle = { 
+  display: "flex", 
+  alignItems: "center", 
+  borderTop: "1px solid lightgray", 
+  padding: 8 
+};
+const toolButtonsContainerStyle = { 
+  border: "1px solid lightgray", 
+  borderRadius: 5, 
+  overflow: "hidden", 
+  display: "inline-flex", 
+  marginRight: 24 
+};
+const toolButtonStyle = (selected) => ({ 
+  paddingTop: 2, 
+  fontSize: 15, 
+  border: "none", 
+  borderRight: "1px solid lightgray", 
+  width: 36, 
+  cursor: "pointer",
+  backgroundColor: selected ? "#28a745" : "transparent", 
+  color: selected ? "white" : "black"
+})
+const colorButtonsContainerStyle = { display: "flex", gap: 4, marginRight: 24 };
+const colorButtonStyle = (color, penColor) => ({ 
+  width: 32, 
+  height: 27, 
+  backgroundColor: color, 
+  borderRadius: 3, 
+  border: "none", 
+  cursor: "pointer", 
+  opacity: penColor === color ? 1 : 0.35 
+})
+const strokeWidthButtonsContainerStyle = { display: "flex", alignItems: "center", gap: 4 };
+const strokeWidthButtonStyle = (size, penStrokeWidth, penColor) => ({ 
+  width: size + 5, 
+  height: size + 5, 
+  backgroundColor: penStrokeWidth === size ? penColor : "transparent", 
+  borderRadius: "50%", 
+  border: `1px solid ${penColor}`, 
+  cursor: "pointer", 
+  padding: 0 
+})
+const clearButtonStyle = { 
+  marginLeft: "auto", 
+  border: "1px solid lightgray", 
+  padding: "6px 8px", 
+  borderRadius: 5, 
+  fontSize: 15 
+}
+const rightSectionStyle = { 
+  display: "flex", 
+  flexDirection: "column", 
+  justifyContent: "center", 
+  maxWidth: 320, 
+  flex: 1 
+}
+const rightSectionTopStyle = { 
+  display: "flex", 
+  flexDirection: "column", 
+  justifyContent: "center", 
+  flex: 1, 
+  textAlign: "center" 
+}
+const playerTextStyle = (color) => ({ fontWeight: "bold", color });
+const wordStyle = { textAlign: "center", fontSize: 32, fontWeight: "bold", fontStyle: "italic" };
+const infoTextStyle = { textAlign: "center", fontSize: 18 };
+const infoText2Style = { fontSize: 15, color: "dimgray", fontWeight: "bold" };
+const guessInputStyle = (color, roundDone) => ({
+  display: "block", 
+  width: "100%", 
+  fontSize: 18, 
+  padding: 8, 
+  marginBottom: 8, 
+  boxSizing: "border-box", 
+  textAlign: "center",
+  fontFamily: roundDone ? "monospace" : "",
+  border: `1px solid ${color || "#cccccc"}`, 
+  color, 
+  borderRadius: 5
+})
+const timerTextStyle = { textAlign: "center", padding: 16, fontWeight: "bold" };
+const guessButtonStyle = { 
+  backgroundColor: "#28a745", 
+  padding: "6px 12px", 
+  color: "white", 
+  border: "none", 
+  fontSize: 15, 
+  borderRadius: 5 
+};
+
+const wordBank = ["Apple", "Banana", "Car", "Dog", "Elephant", "Fish", "Guitar", "House", "Ice Cream", "Kite", "Lion", "Moon", "Noon", "Octopus", "Penguin", "Queen", "Rocket", "Saturn", "Sun", "Tree", "Umbrella", "Violin", "Watermelon", "Xylophone", "Yacht", "Zebra", "Ant", "Basketball", "Cat", "Dolphin", "Eagle", "Fire", "Giraffe", "Helicopter", "Island", "Jellyfish", "Kangaroo", "Lemon", "Mountain", "Notebook", "Owl", "Plane", "Piano", "Rocket", "Rabbit", "Spider", "Train", "Unicorn", "Violin", "Waterfall", "X-ray", "Yoyo"];
 const ROUND_DURATION = 60;
 const colors = ["black", "crimson", "gold", "mediumseagreen", "steelblue", "darkviolet"];
 const strokeWidths = [5, 14, 21, 30];
 
 export default function Pictionary({ connected, players }) {
+  const [drawCursorCoords, setDrawCursorCoords] = useState(null);
   const [gameData, setGameData] = useState({ 
     word: "", 
-    whoIsDrawing: 0, 
+    artist: -1, 
     canvasData: [], 
-    correctGuessPlayerId: null
+    correctGuessPlayerId: null,
+    usedWords: [],
+    finishedDrawing: []
   });
   const [guess, setGuess] = useState("");
   const [penColor, setPenColor] = useState("black");
   const [penStrokeWidth, setPenStrokeWidth] = useState(5);
   const [startTime, setStartTime] = useState(null);
   const [timeRemaining, setTimeRemaining] = useState(ROUND_DURATION)
-  const [tool, setTool] = useState('pen');
-  const [text, setText] = useState("")
   const [timerEnded, setTimerEnded] = useState(false);
+  const [tool, setTool] = useState('pen');
+  const [text, setText] = useState("");
 
   const animationId = useRef();
   const isDrawing = useRef(false);
 
-  const { word, whoIsDrawing, canvasData, correctGuessPlayerId } = gameData;
+  const { word, artist, canvasData, correctGuessPlayerId, usedWords, finishedDrawing } = gameData;
 
   const player = players.find(player => player.isMe);
   const connectedPlayer = players.find(player => !player.isDisconnected);
-  const artist = players[whoIsDrawing];
+  const artistPlayer = players[artist];
   const correctGuessPlayer = players.find(player => player.id === correctGuessPlayerId);
   
   useEffect(() => {
     const handleMouseUp = () => {
       isDrawing.current = false;
     }
-
+    
     document.addEventListener("mouseup", handleMouseUp);
     return () => document.removeEventListener("mouseup", handleMouseUp);
   }, [])
   
   useEffect(() => {
     if (connected) {
-      socketClient.subscribe("/topic/initGamePictionary", message => {
-        if (connectedPlayer.isMe) {
-          setGameData(JSON.parse(message.body));
-          socketClient.publish({ destination: "/app/setTimer", body: ROUND_DURATION });
-          setStartTime(new Date().getTime());
-        }
+      socketClient.publish({ destination: "/app/cancelTimer" });
+
+      socketClient.subscribe("/topic/pictionaryInitGame", message => {
+        setGameData(JSON.parse(message.body));
       })
 
-      socketClient.subscribe("/topic/updateGameDataPictionary", message => {
+      socketClient.subscribe("/topic/pictionaryUpdateGame", message => {
         if (!isDrawing.current)
           setGameData(JSON.parse(message.body));
       })
 
-      socketClient.subscribe("/topic/timerEnded", () => {
-        console.log("ENDED")
-        setTimerEnded(true)
-      })
+      socketClient.subscribe("/topic/timerEnded", () => setTimerEnded(true));
+
+      const word = wordBank[Math.floor(Math.random() * wordBank.length)];
 
       if (connectedPlayer.isMe)
-        socketClient.publish({ destination: "/app/initGamePictionary" })
+        socketClient.publish({ destination: "/app/pictionaryInitGame", body: word });
+
+      return () => {
+        socketClient.unsubscribe("/topic/pictionaryInitGame");
+        socketClient.unsubscribe("/topic/pictionaryUpdateGame");
+        socketClient.unsubscribe("/topic/timerEnded");
+      }
     }
   }, [connected])
+
+  useEffect(() => {
+    if (connected) {
+      const subscription = socketClient.subscribe("/topic/playerDisconnected", message => {
+        const newPlayers = JSON.parse(message.body);
+        const newGameData = { 
+          ...gameData, 
+          artist: getNextConnectedPlayerIdx(newPlayers, artist), 
+          canvasData: [],
+          finishedDrawing: finishedDrawing.map((item, idx) => {
+            return newPlayers[idx].isDisconnected ? true : item
+          })
+        };
+        
+        socketClient.publish({ destination: "/app/cancelTimer" });
+        socketClient.publish({ 
+          destination: "/app/pictionaryUpdateGame", 
+          body: JSON.stringify(newGameData) 
+        });
+      });
+
+      return () => subscription.unsubscribe();
+    }
+  }, [connected, artist, gameData])
+
+  useEffect(() => {
+    if (artist >= 0) {
+      if (connectedPlayer.isMe)
+        socketClient.publish({ destination: "/app/setTimer", body: ROUND_DURATION });
+      
+      setStartTime(new Date().getTime());
+      setTimerEnded(false);
+    }
+  }, [artist])
 
   useEffect(() => {
     if (startTime) { 
@@ -84,34 +217,84 @@ export default function Pictionary({ connected, players }) {
   }, [startTime, correctGuessPlayer]);
 
   useEffect(() => {
-    console.log(timeRemaining <= 0)
     if (connected && (correctGuessPlayer || timerEnded)) {
+      isDrawing.current = false;
+
       setTimeout(() => {
-        const newWord = wordBank[Math.floor(Math.random() * wordBank.length)];
-        const newGameData = { 
-          word: newWord, 
-          whoIsDrawing: (whoIsDrawing + 1) % players.length, 
-          canvasData: [], 
-          correctGuessPlayerId: null 
-        };
-        
         if (connectedPlayer.isMe) {
-          socketClient.publish({ 
-            destination: "/app/updateGameDataPictionary", 
-            body: JSON.stringify(newGameData) 
-          });
-          socketClient.publish({ destination: "/app/setTimer", body: ROUND_DURATION });
+          const newFinishedDrawing = finishedDrawing.slice();
+          const newUsedWords = [...usedWords, word];
+          let newWord = wordBank[Math.floor(Math.random() * wordBank.length)];
+
+          while (newUsedWords.includes(newWord))
+            newWord = wordBank[Math.floor(Math.random() * wordBank.length)];
+
+          newFinishedDrawing[artist] = true;
+          
+          const newGameData = { 
+            word: newWord, 
+            artist: getNextConnectedPlayerIdx(players, (artist + 1) % players.length), 
+            canvasData: [], 
+            correctGuessPlayerId: null,
+            usedWords: newUsedWords,
+            finishedDrawing: newFinishedDrawing
+          };
+
+          socketClient.publish({ destination: "/app/cancelTimer" });
+
+          if (newFinishedDrawing.every(finished => finished)) {
+            socketClient.publish({ destination: "/app/endGame" });
+          } else {
+            socketClient.publish({ 
+              destination: "/app/pictionaryUpdateGame", 
+              body: JSON.stringify(newGameData) 
+            });
+          }
         }
 
-        setStartTime(new Date().getTime());
-        setTimerEnded(false);
+        setText("");
         setGuess("");
-      }, 3000)
+      }, 3000);
     }
-  }, [connected, correctGuessPlayer, timerEnded])
+  }, [connected, !!correctGuessPlayer, timerEnded])
+
+  function getNextConnectedPlayerIdx(players, current) {
+    const last = (players.length + (current - 1)) % players.length;
+    let idx = current;
+
+    while (players[idx].isDisconnected && idx !== last)
+      idx = (idx + 1) % players.length;
+
+    return idx;
+  }
+
+  function handleGuess(e) {
+    e.preventDefault();
+    setGuess(text);
+
+    if (text.toLowerCase() === word.toLowerCase()) {
+      const newPlayers = players.slice();
+      const correctGuessPlayerIdx = players.findIndex(p => p.id === player.id);
+
+      newPlayers[artist] = { 
+        ...newPlayers[artist], 
+        ptsAwarded: newPlayers[artist].ptsAwarded + 1 
+      };
+      newPlayers[correctGuessPlayerIdx] = { 
+        ...newPlayers[correctGuessPlayerIdx],
+        ptsAwarded: newPlayers[correctGuessPlayerIdx].ptsAwarded + 1
+      };
+
+      socketClient.publish({ 
+        destination: "/app/pictionaryUpdateGame", 
+        body: JSON.stringify({ ...gameData, correctGuessPlayerId: player.id })  
+      });
+      socketClient.publish({ destination: "/app/updatePlayers", body: JSON.stringify(newPlayers) });
+    }
+  }
 
   function handleMouseDown(e) {
-    if (artist.isMe) {
+    if (artistPlayer.isMe && !correctGuessPlayer && !timerEnded) {
       isDrawing.current = true;
   
       const canvasData = gameData.canvasData.slice();
@@ -124,59 +307,35 @@ export default function Pictionary({ connected, players }) {
         strokeWidth: tool === "pen" ? penStrokeWidth : 30
       });
       
-      updateGameData({ ...gameData, canvasData });
+      updateCanvasData(canvasData);
     }
   }
 
   function handleMouseMove(e) {
+    const stage = e.target.getStage();
+    const point = stage.getPointerPosition();
+
     if (isDrawing.current) {
       const canvasData = gameData.canvasData.slice();
       const last = canvasData.length - 1;
-      const stage = e.target.getStage();
-      const point = stage.getPointerPosition();
 
       canvasData[last] = { 
         ...canvasData[last],
         points: canvasData[last].points.concat([point.x, point.y]) 
       }; 
-      
-      updateGameData({ ...gameData, canvasData });
+
+      updateCanvasData(canvasData);
     }
+    
+    if (artistPlayer?.isMe)
+      setDrawCursorCoords([point.x, point.y]);
   }
 
-  function handleGuess(e) {
-    e.preventDefault();
-    setGuess(text);
-
-    console.log(word)
-
-    if (text.toLowerCase() === word.toLowerCase()) {
-      socketClient.publish({ 
-        destination: "/app/updateGameDataPictionary", 
-        body: JSON.stringify({ ...gameData, correctGuessPlayerId: player.id })  
-      });
-
-      const newPlayers = players.slice();
-      const correctGuessPlayerIdx = players.findIndex(p => p.id === player.id);
-
-      newPlayers[whoIsDrawing] = { 
-        ...newPlayers[whoIsDrawing], 
-        ptsAwarded: newPlayers[whoIsDrawing].ptsAwarded + 1 
-      };
-      newPlayers[correctGuessPlayerIdx] = { 
-        ...newPlayers[correctGuessPlayerIdx],
-        ptsAwarded: newPlayers[correctGuessPlayerIdx].ptsAwarded + 1
-      };
-
-      socketClient.publish({ destination: "/app/updatePlayers", body: JSON.stringify(newPlayers) });
-      setText("")
-    }
-  }
-
-  function updateGameData(newGameData) {
+  function updateCanvasData(canvasData) {
+    const newGameData = { ...gameData, canvasData };
     setGameData(newGameData);
     socketClient.publish({ 
-      destination: "/app/updateGameDataPictionary",
+      destination: "/app/pictionaryUpdateGame",
       body: JSON.stringify(newGameData) 
     });
   }
@@ -187,9 +346,16 @@ export default function Pictionary({ connected, players }) {
   const isRoundDone = correctGuessPlayer || isCorrect || timeRemaining <= 0;
 
   return (
-    <div style={{ display: "flex", justifyContent: "center", width: "100%", padding: 16 }}>
-      <div style={{ border: "1px solid lightgray", marginRight: 24, flexShrink: 0 }}>
-        <Stage width={700} height={475} onMouseDown={handleMouseDown} onMouseMove={handleMouseMove}>
+    <div style={containerStyle}>
+      <div style={boardSectionStyle}>
+        <Stage 
+          width={700} 
+          height={475} 
+          onMouseDown={handleMouseDown} 
+          onMouseMove={handleMouseMove}
+          onMouseLeave={() => setDrawCursorCoords(null)}
+          style={{ cursor: artistPlayer?.isMe ? "none" : "default" }}
+        >
           <Layer>
             {canvasData.map((stroke, i) => (
               <Line
@@ -200,57 +366,58 @@ export default function Pictionary({ connected, players }) {
                 tension={0.5}
                 lineCap="round"
                 lineJoin="round"
-                globalCompositeOperation={
-                  stroke.tool === 'eraser' ? 'destination-out' : 'source-over'
-                }
+                globalCompositeOperation={stroke.tool === 'eraser' ? 'destination-out' : 'source-over'}
               />
             ))}
+            {drawCursorCoords && (
+              <Circle 
+                width={tool === "pen" ? penStrokeWidth + 5 : 30} 
+                height={tool === "pen" ? penStrokeWidth + 5 : 30} 
+                stroke="lightgray"
+                x={drawCursorCoords[0]}
+                y={drawCursorCoords[1]}
+              />
+            )}
           </Layer>
         </Stage>
-        {artist.isMe && (
-          <div style={{ display: "flex", alignItems: "center", borderTop: "1px solid lightgray", padding: 8 }}>
-            <div style={{ border: "1px solid lightgray", borderRadius: 5, overflow: "hidden", display: "inline-flex", marginRight: 24 }}>
-              <button onClick={() => setTool("pen")} style={{ paddingTop: 2, fontSize: 15, border: "none", borderRight: "1px solid lightgray", width: 36, backgroundColor: tool === "pen" ? "#28a745" : "transparent", color: tool === "pen" ? "white" : "black" }}>
+        {artistPlayer?.isMe && (
+          <div style={boardBottomStyle}>
+            <div style={toolButtonsContainerStyle}>
+              <button onClick={() => setTool("pen")} style={toolButtonStyle(tool === "pen")}>
                 <FaPenClip />
               </button>
-              <button onClick={() => setTool("eraser")} style={{ paddingTop: 2, fontSize: 15, border: "none", width: 36, backgroundColor: tool === "eraser" ? "#28a745" : "transparent", color: tool === "eraser" ? "white" : "black" }}>
+              <button onClick={() => setTool("eraser")} style={toolButtonStyle(tool === "eraser")}>
                 <FaEraser style={{ fontSize: 20, marginTop: 1 }} />
               </button>
             </div>
-            <div style={{ display: "flex", gap: 4, marginRight: 24 }}>
+            <div style={colorButtonsContainerStyle}>
               {colors.map((color, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setPenColor(color)}
-                  style={{ width: 32, height: 27, backgroundColor: color, borderRadius: 3, border: "none", cursor: "pointer", opacity: penColor === color ? 1 : 0.35 }} 
-                />
+                <button key={idx} onClick={() => setPenColor(color)} style={colorButtonStyle(color, penColor)} />
               ))}
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+            <div style={strokeWidthButtonsContainerStyle}>
               {strokeWidths.map((width, idx) => (
                 <button
                   key={idx}
                   onClick={() => setPenStrokeWidth(width)}
-                  style={{ width: width + 5, height: width + 5, backgroundColor: penStrokeWidth === width ? penColor : "transparent", borderRadius: "50%", border: `1px solid ${penColor}`, cursor: "pointer", padding: 0 }} 
+                  style={strokeWidthButtonStyle(width, penStrokeWidth, penColor)} 
                 />
               ))}
             </div>
-            <button
-              onClick={() => updateGameData({ ...gameData, canvasData: [] })}
-              style={{ marginLeft: "auto", border: "1px solid lightgray", padding: "6px 8px", borderRadius: 5, fontSize: 15 }}
-            >Clear</button>
+            <button onClick={() => updateCanvasData([])} style={clearButtonStyle}>Clear</button>
           </div>
         )}
       </div>
-      <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", maxWidth: 320, flex: 1 }}>
-        <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", flex: 1, textAlign: "center" }}>
-          {artist.isMe ? (
+      <div style={rightSectionStyle}>
+        <div style={rightSectionTopStyle}>
+          {artistPlayer?.isMe ? (
             <>
-              <p style={{ textAlign: "center", fontSize: 18 }}><span style={{ fontWeight: "bold", color: artist.color }}>You</span> are drawing:</p>
-              <p style={{ textAlign: "center", fontSize: 32, fontWeight: "bold", textTransform: "capitalize", fontStyle: "italic" }}>{word}</p>
+              <p style={infoTextStyle}><span style={playerTextStyle(artistPlayer.color)}>You</span> are drawing:</p>
+              <p style={wordStyle}>{word}</p>
               {correctGuessPlayer && (
-                <p style={{ textAlign: "center", fontSize: 18, marginTop: 16 }}>
-                 <span style={{ fontWeight: "bold", color: correctGuessPlayer.color }}>{correctGuessPlayer.name}</span> guessed the word!
+                <p style={{ ...infoTextStyle, marginTop: 16 }}>
+                  <span style={playerTextStyle(artistPlayer.color)}>{correctGuessPlayer.name}</span>
+                  {" "}guessed the word!
                 </p>
               )}
             </>
@@ -258,19 +425,21 @@ export default function Pictionary({ connected, players }) {
             <>
               <div style={{ marginBottom: 24 }}>
                 {correctGuessPlayer ? (
-                  <p style={{ textAlign: "center", fontSize: 18 }}>
-                    <span style={{ fontWeight: "bold", color: correctGuessPlayer.color }}>
+                  <p style={infoTextStyle}>
+                    <span style={playerTextStyle(artistPlayer.color)}>
                       {correctGuessPlayer.isMe ? "You" : correctGuessPlayer.name}
                     </span> guessed the word!
                   </p>
-                ) : timeRemaining === 0 ? (
-                  <p style={{ textAlign: "center", fontSize: 18, marginTop: 24 }}>
-                    Out of Time! The word was:
-                  </p>
+                ) : timerEnded ? (
+                  <p style={{ ...infoTextStyle, marginTop: 24 }}>Out of Time! The word was:</p>
                 ) : (
                   <>
-                    <p style={{ textAlign: "center", fontSize: 18, marginTop: 24 }}>{artist.name} is drawing...</p>
-                    <p style={{ marginBottom: 16, fontSize: 15, color: "dimgray", fontWeight: "bold" }}>Be the first to correctly guess the drawing!</p>
+                    <p style={{ ...infoTextStyle, marginTop: 24 }}>
+                      <span style={playerTextStyle(artistPlayer?.color)}>{artistPlayer?.name}</span> is drawing...
+                    </p>
+                    <p style={{ marginBottom: 16, ...infoText2Style }}>
+                      Be the first to correctly guess the drawing!
+                    </p>
                   </>
                 )}
               </div>
@@ -282,11 +451,7 @@ export default function Pictionary({ connected, players }) {
                       setGuess("")
                   }}
                   placeholder="Type your guess" 
-                  style={{ 
-                    display: "block", width: "100%", fontSize: 18, padding: 8, marginBottom: 8, boxSizing: "border-box", 
-                    textAlign: "center", fontFamily: isRoundDone ? "monospace" : "",
-                    border: `1px solid ${inputColor || "#cccccc"}`, color: inputColor, borderRadius: 5
-                  }}
+                  style={guessInputStyle(inputColor, isRoundDone)}
                   value={isRoundDone ? word.toUpperCase() : text}
                   disabled={isRoundDone}
                 />
@@ -295,15 +460,13 @@ export default function Pictionary({ connected, players }) {
                     {isCorrect && <span style={{ fontWeight: "bold", color: "green" }}>Correct</span>}
                     {isIncorrect && <span style={{ fontWeight: "bold", color: "red" }}>Incorrect</span>}
                   </p>
-                  {!isRoundDone && (
-                    <button style={{ backgroundColor: "#28a745", padding: "6px 12px", color: "white", border: "none", fontSize: 15, borderRadius: 5 }}>Guess</button>
-                  )}
+                  {!isRoundDone && <button style={guessButtonStyle}>Guess</button>}
                 </div>
               </form>
             </>
           )}
         </div>
-        <p style={{ textAlign: "center", padding: 16, fontWeight: "bold" }}>
+        <p style={timerTextStyle}>
           {Math.floor(timeRemaining / 60)}:{(timeRemaining % 60).toString().padStart(2, "0")}
         </p>
       </div>
