@@ -24,6 +24,7 @@ public class GameUser {
     private String code;
     private String gameCode;
     private double currentScore = 0;
+    private double previousScore = 0;
 
     public long lastInteraction = 0;
 
@@ -56,6 +57,10 @@ public class GameUser {
         }
         long difference = lastTime - this.lastInteraction;
         return difference > TIMEOUT; // 50 seconds.
+    }
+    public void updateScore(double score) {
+        this.previousScore = this.currentScore;
+        this.currentScore += score;
     }
     public synchronized void updateLastInteraction() {
         this.lastInteraction = System.currentTimeMillis();

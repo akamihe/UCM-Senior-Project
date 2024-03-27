@@ -9,6 +9,9 @@ import java.util.*;
 
 @Data
 public class GameBroker implements Runnable{
+
+    public static int ENDGAME_POINT_REWARD_PER_PLAYER = 50;
+
     public static Class[] loadableGames = new Class[]
     {
         //DebugGame.class,

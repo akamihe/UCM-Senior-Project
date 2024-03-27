@@ -13,6 +13,7 @@ public class UserData {
 
     private double score;
 
+    private double previousScore;
     private boolean isGameMaster = false;
 
     public UserData(GameUser user) {
@@ -23,5 +24,6 @@ public class UserData {
         this.id = user.getInstanceId();
         this.username = user.getUsername();
         this.isGameMaster = isGameMaster;
+        this.previousScore = user.getPreviousScore();
     }
 }

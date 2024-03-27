@@ -18,6 +18,8 @@ public class GameBrokerData implements UserDataInterface {
 
     private UserData self;
     private UserData gameMaster;
+    private int secondsUntilNextGame = 0;
+    private String nextGameName = "";
 
     private boolean betweenGames = false;
 
@@ -30,6 +32,10 @@ public class GameBrokerData implements UserDataInterface {
             this.gameType = currentGame.getClass().getSimpleName();
         } else {
             this.betweenGames = game.isBetweenGames();
+            if(this.betweenGames) {
+                this.secondsUntilNextGame = (int) ((game.getNextGameStartTime() - System.currentTimeMillis()) / 1000);
+                this.nextGameName = game.getNextGames().getFirst().getClass().getSimpleName();
+            }
             this.gameFinished = game.isFinished();
         }
         this.users.addAll(game.getUsers().stream().map((GameUser data) -> new UserData(data, game.getGameMaster() == data)).toList());
