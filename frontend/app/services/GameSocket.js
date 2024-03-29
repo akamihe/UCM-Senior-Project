@@ -1,4 +1,4 @@
-const API_URL = 'https://localhost:8443'
+const API_URL = 'http://localhost:8443'
 
 import io from "socket.io-client";
 import React, { useState} from 'react';
@@ -15,7 +15,7 @@ export default class GameSocket {
         this.onDisconnect = null;
         this.activeSubscriptions = new Map(); //map
         this.socket = new Client({
-            brokerURL: 'wss://localhost:8443/game/instance'
+            brokerURL: 'ws://localhost:8443/game/instance'
         });
         var _this = this;
         this.socket.onConnect = () => {
