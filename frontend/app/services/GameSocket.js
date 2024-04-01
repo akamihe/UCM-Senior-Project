@@ -91,8 +91,8 @@ export default class GameSocket {
     sendWakeMessageToServer(data) {
         this.sendMessageToServer('/broker/wake', data);
     }
-    startGame() {
-        this.sendMessageToServer("/broker/start", {});
+    startGame(list) {
+        this.sendMessageToServer("/broker/start", {list:list});
     }
 
     //debug game
@@ -114,6 +114,14 @@ export default class GameSocket {
     }
 
 
+    //battleship game
+    subscribeToBattleshipGame(callback) {
+        this.subscribe("/game/battleship/listen", callback);
+    }
+
+    battleshipGameDataSet(x, y) {
+        this.sendMessageToServer("/game/battleship/setValue", {x:x, y:y});
+    }
 
 
 

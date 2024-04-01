@@ -10,7 +10,10 @@ import ucmo.senior_project.domain.GameBroker;
 import ucmo.senior_project.domain.GameUser;
 import ucmo.senior_project.middleware.LoginInterceptor;
 import ucmo.senior_project.resource.auth.GameCodeLogin;
+import ucmo.senior_project.resource.input.ActiveGames;
 import ucmo.senior_project.service.AuthUserService;
+
+import java.util.Arrays;
 
 @RestController
 @CrossOrigin

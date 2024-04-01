@@ -12,6 +12,7 @@ import ucmo.senior_project.resource.auth.UserDataInterface;
 import ucmo.senior_project.resource.auth.UserDisconnected;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import ucmo.senior_project.resource.input.ActiveGames;
 
 @RestController
 @CrossOrigin
@@ -30,9 +31,9 @@ public class GameBrokerController extends AbstractGameBrokerController {
 	}
 
 	@MessageMapping("/broker/start/{code}")
-	public void begin(@DestinationVariable String code) throws Exception {
+	public void begin(@DestinationVariable String code, ActiveGames games) throws Exception {
 		if (this.activateUser(code) && this.user == gameBroker.getGameMaster()) {
-			this.gameBroker.beginGame();
+			this.gameBroker.beginGame(games);
 		}
 	}
 }

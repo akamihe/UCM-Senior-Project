@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo , useRef, useState} from "react";
 import { useNavigate } from "react-router-dom";
 
 const style = {
@@ -54,10 +54,11 @@ const style = {
 
 
 export default function WaitingRoom(data) {
+    var ignoredGames = useRef([]);
     var _socket = data.socket;
     var gameState = data.gameState;
     function handleSubmit(e) {
-        _socket.startGame();
+        _socket.startGame(gameState.chooseableGames.list.filter(x => !ignoredGames.current.includes(x)));
     }
 
     var users = gameState.users
@@ -65,7 +66,27 @@ export default function WaitingRoom(data) {
   const code = gameState.code;
   const colors = ["#cc0000", "#00cc00", "#0000cc", "#cc7700"];
   const isHost = gameState.self.gameMaster;
+  function listOfGames() {
+    return <div>
+      {gameState.chooseableGames.list.map(d => gameData(d)) }
+    </div>
+  }
+  function gameData(data) {
+    function onClickIndv() {
 
+    }
+    function onClick() {
+      if(ignoredGames.current.indexOf(data)==-1) {
+          ignoredGames.current.push(data);
+      } else {
+          const index = ignoredGames.current.indexOf(data);
+          ignoredGames.current.splice(index, 1);
+      }
+    }
+    return <div key={data} onClick={onClick}>
+        <input type="checkbox" checked={ignoredGames.current.indexOf(data)==-1} onChange={onClickIndv}></input>  {data}
+      </div>
+  }
   return (
     <div style={style.container}>
       <div style={style.contentContainer}>
@@ -100,6 +121,9 @@ export default function WaitingRoom(data) {
             Waiting for host to start the game...
           </p>
         )}
+        <div style={{ textAlign: "center", fontSize: 18 }}>
+            {listOfGames()}
+        </div>
       </div>
     </div>
   )

@@ -28,6 +28,7 @@ function Join() {
     
     return <div className="row justify-content-lg-center h-100 p-5">
             <div className="col-lg-5 h-100 d-flex flex-column">
+
                 <div className="text-center lg-3 mb-4">
                     <h2>Start Game</h2>
                 </div>

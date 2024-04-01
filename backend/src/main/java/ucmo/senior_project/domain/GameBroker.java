@@ -3,6 +3,7 @@ package ucmo.senior_project.domain;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Data;
 import ucmo.senior_project.domain.gametypes.*;
+import ucmo.senior_project.resource.input.ActiveGames;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -12,10 +13,10 @@ public class GameBroker implements Runnable{
 
     public static int ENDGAME_POINT_REWARD_PER_PLAYER = 50;
 
-    public static Class[] loadableGames = new Class[]
+    public static Class<Game>[] loadableGames = new Class[]
     {
         //DebugGame.class,
-        //Battleship.class,
+        Battleship.class,
         //HangMan.class,
         Sudoku.class,
         //TicTacToe.class,
@@ -52,11 +53,13 @@ public class GameBroker implements Runnable{
         return nextGameStartTime != 0 && this.nextGames.isEmpty();
     }
 
-    public synchronized void beginGame() {
-        for(int i = 0; i < 2; i ++) {
+    public synchronized void beginGame(ActiveGames active) {
+        List<Class<Game>> games = Arrays.stream(loadableGames)
+                .filter(e -> active.getList().contains(e.getSimpleName())).toList();
+        for(int i = 0; i < Math.max(2, games.size()); i ++) {
             int rnd = new Random().nextInt(loadableGames.length); //todo, allow selcetion of what games to play.
             try {
-                this.nextGames.add((Game) loadableGames[rnd].getDeclaredConstructor().newInstance());
+                this.nextGames.add(loadableGames[rnd].getDeclaredConstructor().newInstance());
                 //this.currentGame = (Game);
                 //this.currentGame.init(this.users);
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
