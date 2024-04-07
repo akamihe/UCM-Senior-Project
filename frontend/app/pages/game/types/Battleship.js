@@ -70,7 +70,6 @@ export default function Battleship({socket, gameState}) {
     if(hasLoaded.current == false) {
         socket.clearSubscriptions();
         socket.subscribeToBattleshipGame((data)=> {
-            console.log('debug', data);
             setGameData(data);
         });
         hasLoaded.current = true;

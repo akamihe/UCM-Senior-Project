@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import ucmo.senior_project.domain.GameUser;
 
+import java.awt.*;
+
 
 @Data
 @AllArgsConstructor
@@ -12,7 +14,7 @@ public class UserData {
     private String username;
 
     private double score;
-
+    private String color;
     private double previousScore;
     private boolean isGameMaster = false;
 
@@ -25,5 +27,6 @@ public class UserData {
         this.username = user.getUsername();
         this.isGameMaster = isGameMaster;
         this.previousScore = user.getPreviousScore();
+        this.color = "#" + user.getColor();
     }
 }

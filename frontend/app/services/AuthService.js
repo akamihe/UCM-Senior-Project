@@ -28,7 +28,6 @@ export default class AuthService {
             })
     }
     static authGame(gameCode, username) {
-        console.log(username, gameCode);
         return ApiCallerService.postNoAuth('gameuser/game/auth', {username: username, code: gameCode})
             .then(res => res.json())
             .then(res => {sessionStorage.setItem(USER_NAME_TEMP_SESSION_ATTRIBUTE_NAME, JSON.stringify(res))})

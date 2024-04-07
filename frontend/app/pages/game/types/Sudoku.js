@@ -26,7 +26,6 @@ export default function Sudoku({socket, gameState}) {
 
   const animationId = useRef();
 
-  console.log(gameState);
   const users = gameState.users;
   //const done = connectedPlayers.every(player => player.done) || connectedPlayers.length < 2;
 

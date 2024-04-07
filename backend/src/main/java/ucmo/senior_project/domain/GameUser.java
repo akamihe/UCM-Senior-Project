@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+import java.awt.Color;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,6 +17,19 @@ public class GameUser {
     public static long TIMEOUT = 50000; //50 seconds
     private static Map<String, GameUser> gameUsers = Collections.synchronizedMap(new HashMap<>());
     public static int CURRENT_COUNT = 0;
+
+    public static final Color[] PREDEFINED_COLORS = new Color[]{
+            Color.RED,
+            Color.BLUE,
+            Color.ORANGE,
+            Color.PINK,
+            Color.YELLOW,
+            Color.CYAN,
+            Color.MAGENTA,
+            Color.GREEN,
+            Color.LIGHT_GRAY,
+    };
+
     @JsonIgnore
     private GameBroker instance;
     private int instanceId = CURRENT_COUNT++;
@@ -23,6 +37,8 @@ public class GameUser {
     private String username;
     private String code;
     private String gameCode;
+    private String color;
+
     private double currentScore = 0;
     private double previousScore = 0;
 
@@ -34,6 +50,7 @@ public class GameUser {
         this.gameCode = gameCode;
         this.code = createCode(instance.getCode());
         gameUsers.put(this.code, this);
+        this.color = Integer.toHexString(PREDEFINED_COLORS[this.instanceId % PREDEFINED_COLORS.length].getRGB()).substring(2);
     }
     public GameUser(GameBroker instance, AuthUser user, String gameCode) {
         this.instance = instance;
@@ -42,6 +59,7 @@ public class GameUser {
         this.gameCode = gameCode;
         this.code = createCode(instance.getCode());
         gameUsers.put(this.code, this);
+        this.color = Integer.toHexString(PREDEFINED_COLORS[this.instanceId % PREDEFINED_COLORS.length].getRGB()).substring(2);
     }
     public static String createCode(String gameCode) {
         UUID u = UUID.randomUUID();
@@ -78,5 +96,8 @@ public class GameUser {
 
     public int hashCode() {
         return this.code.hashCode();
+    }
+    public void setColor(String color) {
+        this.color = Integer.toHexString(Integer.parseInt(color, 16));
     }
 }

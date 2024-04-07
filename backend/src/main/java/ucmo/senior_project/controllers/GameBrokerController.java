@@ -36,4 +36,11 @@ public class GameBrokerController extends AbstractGameBrokerController {
 			this.gameBroker.beginGame(games);
 		}
 	}
+
+	@MessageMapping("/broker/setProfileColor/{code}")
+	public void setProfileColor(@DestinationVariable String code, @RequestBody JsonNode payload) throws Exception {
+		if(this.activateUser(code)) {
+			this.user.setColor(payload.get("color").asText());
+		}
+	}
 }

@@ -39,6 +39,12 @@ const style = {
     padding: "0px 8px", 
     borderRadius: 16
   }),
+  playerListSelectColorPosition:{
+    position: "absolute", 
+    right: 52, 
+    top: 8, 
+    fontWeight: "bold",  
+  },
   codeSection: { display: "flex", flexDirection: "column", height: "100%" },
   codeTextContainer: { flex: 1, display: "flex", alignItems: "center" },
   startGameBtn: { 
@@ -64,12 +70,14 @@ export default function WaitingRoom(data) {
     var users = gameState.users
   const navigate = useNavigate();
   const code = gameState.code;
-  const colors = ["#cc0000", "#00cc00", "#0000cc", "#cc7700"];
   const isHost = gameState.self.gameMaster;
   function listOfGames() {
     return <div>
       {gameState.chooseableGames.list.map(d => gameData(d)) }
     </div>
+  }
+  function setUserColor(input) {
+    _socket.setUserColor(input.target.value.substring(1));
   }
   function gameData(data) {
     function onClickIndv() {
@@ -95,10 +103,11 @@ export default function WaitingRoom(data) {
             <p style={style.numPlayersText}>{users.length} Players</p>
             <div style={style.playersList}>
               {users.map((user, idx) => (
-                <div key={idx} style={style.playersListItem(colors[idx])}>
+                <div key={idx} style={style.playersListItem(user.color)}>
                   <span style={style.playersListItemNum}>{idx + 1}</span>
                   {user.username}
-                  {user.id == gameState.self.id && <span style={style.playersListItemYouText(colors[idx])}>You</span>}
+                  {user.id == gameState.self.id && <input type="color" onChange={setUserColor} style={style.playerListSelectColorPosition} value={user.color}></input> }
+                  {user.id == gameState.self.id && <span style={style.playersListItemYouText(gameState.self.color)}>You</span>}
                 </div>
               ))}
             </div>

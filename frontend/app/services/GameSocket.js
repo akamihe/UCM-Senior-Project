@@ -40,7 +40,6 @@ export default class GameSocket {
         this.socket.activate();
     }
     bindGameInstanceUpdate(callable) {
-        console.log('debug');
         this.callable = callable;
     }
     setOnDisconnect(disconnect) {
@@ -94,6 +93,11 @@ export default class GameSocket {
     startGame(list) {
         this.sendMessageToServer("/broker/start", {list:list});
     }
+    //broker other details
+    setUserColor(color) {
+        this.sendMessageToServer("/broker/setProfileColor", {color:color})
+    }
+
 
     //debug game
     debugGameInput(data) {
@@ -102,7 +106,6 @@ export default class GameSocket {
     subscribeToDebugGame(callback) {
         this.subscribe("/game/debug/listen", callback);
     }
-
     //sudoku game
 
     subscribeToSudokuGame(callback) {

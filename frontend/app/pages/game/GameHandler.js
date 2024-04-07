@@ -57,7 +57,7 @@ function gameFinished(gameState, isDone) {
     return <div style={style.gameResultsContainer}>
         <div style={{ width: 600 }}>
         {gameState.users.map((player, idx) => {
-            const placementColor = idx < 3 ? placementColors[idx] : "white";
+            const placementColor = player.color;
 
             return (
             <div key={idx} style={{ marginBottom: 16 }}>
