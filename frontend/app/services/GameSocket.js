@@ -1,4 +1,6 @@
 const API_URL = 'http://localhost:8443'
+const DEFAULT_EXT_PORT = '8443'
+const DEFAULT_SELF_PORT = '3000'
 
 import io from "socket.io-client";
 import React, { useState} from 'react';
@@ -14,8 +16,9 @@ export default class GameSocket {
         this.gameInstance = null;
         this.onDisconnect = null;
         this.activeSubscriptions = new Map(); //map
+        var app_url = process.env.app_url || (window.location.host).replace(DEFAULT_SELF_PORT, DEFAULT_EXT_PORT);
         this.socket = new Client({
-            brokerURL: 'ws://localhost:8443/game/instance'
+            brokerURL: `ws://${app_url}/game/instance`
         });
         var _this = this;
         this.socket.onConnect = () => {

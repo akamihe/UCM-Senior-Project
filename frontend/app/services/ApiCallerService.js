@@ -1,4 +1,6 @@
 const API_URL = 'http://localhost:8443'
+const DEFAULT_EXT_PORT = '8443'
+const DEFAULT_SELF_PORT = '3000'
 
 export const USER_NAME_SESSION_ATTRIBUTE_NAME = 'authenticatedUser'
 export const USER_NAME_TEMP_SESSION_ATTRIBUTE_NAME = 'gameUser'
@@ -18,7 +20,8 @@ export default class ApiCallerService {
         return ret;
     }
     static fetchCall(endpoint, type, data, authOveride=false) {
-        return fetch(`${API_URL}/${endpoint}`,
+        var app_url = process.env.app_url || (window.location.protocol + "//" + window.location.host).replace(DEFAULT_SELF_PORT, DEFAULT_EXT_PORT);
+        return fetch(`${app_url}/${endpoint}`,
             {
                 method: type,
                 headers: this.getHeader(authOveride),

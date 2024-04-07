@@ -124,15 +124,15 @@ export default function WaitingRoom(data) {
             <button onClick={() => handleSubmit()} style={style.startGameBtn}>
               Start Game
             </button>
+              <div style={{ fontSize: 18 }}>
+                  {listOfGames()}
+              </div>
           </div>
         ) : (
           <p style={{ textAlign: "center", fontSize: 18 }}>
             Waiting for host to start the game...
           </p>
         )}
-        <div style={{ textAlign: "center", fontSize: 18 }}>
-            {listOfGames()}
-        </div>
       </div>
     </div>
   )
