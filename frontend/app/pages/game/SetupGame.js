@@ -12,8 +12,9 @@ const ErrorForm = props => {
 
 function Join() {
     const [error, setError] = useState("");
+    const [user, setUser] = useState({ username: '', code: '' });
     
-    const submitUser = (e) => {
+    const createNewGame = (e) => {
         e.preventDefault();
         
         AuthService.createGame()
@@ -25,27 +26,73 @@ function Join() {
                 setError("Error joining game");
             });
     };
+    const submitUser = (e) => {
+        e.preventDefault();
+        
+        AuthService.authGameFull(user.code)
+            .then(() => {
+                window.location.href = "/game/active";
+                setError("");
+            })
+            .catch(() => {
+                setError("Error joining game");
+            });
+    };
     
+    const changeValue = (e) => {
+        setUser({ ...user, [e.target.name]: e.target.value });
+    }
     return <div className="row justify-content-lg-center h-100 p-5">
-            <div className="col-lg-5 h-100 d-flex flex-column">
+            <div className=" h-100 d-flex flex-column container">
 
                 <div className="text-center lg-3 mb-4">
-                    <h2>Start Game</h2>
+                    <h2>Game Selection Menu</h2>
                 </div>
-                <div
-                    className="d-flex flex-column justify-content-center align-items-center col-12"
-                    style={{ flex: 0.8 }}
-                >
-                        <>
-                            <Form className="col-12" onSubmit={submitUser}>
-                                <div className="mt-4 text-center">
-                                    <Button variant="primary" style={{width: 100}} type="submit">
-                                        Create Game 
-                                    </Button>
+                <div className="row" style={{ flex: 0.8 }}>
+                    <div className="col-6">
+                        <Form onSubmit={createNewGame}>
+                            <div className="mt-4 text-center">
+                                <div style={{marginBottom: 1 + 'em'}} > Begin New Game</div>
+                                <Button variant="primary" type="submit">
+                                    Create Game 
+                                </Button>
+                            </div>
+                        </Form>
+                    </div>
+                    <div className="col-6">
+                        <div className="row justify-content-lg-center h-100 p-5">
+                            <div className="h-100 d-flex flex-column">
+                                <div className="text-center lg-3 mb-4">
+                                    <h2>Join Game</h2>
                                 </div>
-                            </Form>
-                            <ErrorForm error={error} />
-                        </>
+                                <div
+                                    className="d-flex flex-column justify-content-center align-items-center col-12"
+                                    style={{ flex: 0.8 }}
+                                >
+                                        <>
+                                            <Form className="col-12" onSubmit={submitUser}>
+                                                <Form.Group controlId="GameCode" style={{marginBottom: 16}}>
+                                                    <Form.Label style={{marginBottom: 4}}>Enter Gamecode</Form.Label>
+                                                    <Form.Control
+                                                        type="text"
+                                                        placeholder="Enter GameCode"
+                                                        onChange={changeValue}
+                                                        name="code"
+                                                        required
+                                                    />
+                                                </Form.Group>
+                                                <div className="mt-4 text-center">
+                                                    <Button variant="primary" style={{width: 100}} type="submit">
+                                                        Join 
+                                                    </Button>
+                                                </div>
+                                            </Form>
+                                            <ErrorForm error={error} />
+                                        </>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
                 </div>
             </div>
         </div>

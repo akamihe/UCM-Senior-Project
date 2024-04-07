@@ -1,6 +1,5 @@
 package ucmo.senior_project.domain;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Data;
 import ucmo.senior_project.domain.gametypes.*;
 import ucmo.senior_project.resource.input.ActiveGames;
@@ -68,8 +67,14 @@ public class GameBroker implements Runnable{
             }
         }
     }
-    public synchronized GameUser newgameUser(String name) {
+    public synchronized GameUser newGameUser(String name) {
         GameUser user = new GameUser(this, name, this.code);
+        this.users.add(user);
+        return user;
+    }
+
+    public synchronized GameUser newGameUserFromAuthUser(AuthUser authUser) {
+        GameUser user = new GameUser(this, authUser, this.code);
         this.users.add(user);
         return user;
     }

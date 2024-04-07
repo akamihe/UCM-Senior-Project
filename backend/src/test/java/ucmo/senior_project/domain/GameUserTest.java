@@ -1,7 +1,5 @@
 package ucmo.senior_project.domain;
 
-import org.junit.Assert;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +19,7 @@ class GameUserTest {
         GameBrokerAuthUser.setUserId(new Random().nextInt());
         broker = GameBroker.setupGame(GameBrokerAuthUser);
         brokerMaster = broker.getGameMaster();
-        gameUser = broker.newgameUser("abc");
+        gameUser = broker.newGameUser("abc");
     }
 
     @Test

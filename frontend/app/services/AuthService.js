@@ -35,6 +35,15 @@ export default class AuthService {
                 return res;
             })
     }
+    static authGameFull(gameCode) {
+        
+        return ApiCallerService.post('authuser/game/join', {code: gameCode})
+            .then(res => res.json())
+            .then(res => {sessionStorage.setItem(USER_NAME_TEMP_SESSION_ATTRIBUTE_NAME, JSON.stringify(res))})
+            .then(res => {
+                return res;
+            })
+    }
     static logout() {
         sessionStorage.removeItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
         sessionStorage.removeItem(USER_NAME_TEMP_SESSION_ATTRIBUTE_NAME);

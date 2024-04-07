@@ -12,7 +12,7 @@ const ErrorForm = props => {
 
 function Join() {
     const [error, setError] = useState("");
-    const [user, setUser] = useState({ username: '', password: '' });
+    const [user, setUser] = useState({ username: '', code: '' });
     
     const changeValue = (e) => {
         setUser({ ...user, [e.target.name]: e.target.value });
