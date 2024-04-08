@@ -63,4 +63,7 @@ public class AuthUserService {
         AuthUser user = this.GameUserRepository.findById(id).get();
         return user;
     }
+    public void destroy(AuthUser user) {
+        this.GameUserRepository.delete(user);
+    }
 }
