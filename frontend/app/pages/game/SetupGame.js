@@ -50,14 +50,20 @@ function Join() {
                 </div>
                 <div className="row" style={{ flex: 0.8 }}>
                     <div className="col-6">
-                        <Form onSubmit={createNewGame}>
-                            <div className="mt-4 text-center">
-                                <div style={{marginBottom: 1 + 'em'}} > Begin New Game</div>
-                                <Button variant="primary" type="submit">
-                                    Create Game 
-                                </Button>
-                            </div>
-                        </Form>
+                        <div className="row justify-content-lg-center h-100 p-5">
+                            <Form onSubmit={createNewGame}>
+
+                                <div className="text-center lg-3 mb-4">
+                                    <h2>Create Game</h2>
+                                </div>
+                                <div className="mt-4 text-center">
+                                    <div style={{marginBottom: 1 + 'em'}} > Begin New Game</div>
+                                    <Button variant="primary" type="submit">
+                                        Create Game 
+                                    </Button>
+                                </div>
+                            </Form>
+                        </div>
                     </div>
                     <div className="col-6">
                         <div className="row justify-content-lg-center h-100 p-5">
