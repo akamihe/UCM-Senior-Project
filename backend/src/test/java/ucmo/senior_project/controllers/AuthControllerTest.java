@@ -81,6 +81,6 @@ class AuthControllerTest {
 
     @Test
     void createGame() {
-        controller.createGame(mockedRequest);
+        assertNotNull(controller.createGame(mockedRequest));
     }
 }
