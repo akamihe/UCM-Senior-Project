@@ -6,10 +6,10 @@ import DebugGame from './types/DebugGame';
 import Battleship from './types/Battleship';
 import HangMan from './types/HangMan';
 import Sodoku from './types/Sudoku';
+import Pictionary from './types/Pictionary'
 import TicTacToe from './types/TicTacToe';
 import GameWaitingRoom from './types/GameWaitingRoom';
 import AuthService from '/app/services/AuthService';
-
 
 function gameFinished(gameState, isDone) {
     const style = {
@@ -120,6 +120,8 @@ function GameHandler() {
             return <TicTacToe socket={socket} gameState={gameState} />
         case 'Battleship':
             return <Battleship socket={socket} gameState={gameState} />
+        case 'Pictionary':
+            return <Pictionary socket={socket} gameState={gameState} />
         default:
             return <GameWaitingRoom socket={socket} gameState={gameState}/>
     }

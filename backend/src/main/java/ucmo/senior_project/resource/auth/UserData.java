@@ -19,7 +19,7 @@ public class UserData {
     private boolean isGameMaster = false;
 
     public UserData(GameUser user) {
-        this(user, user.getInstance().getGameMaster() == user);
+        this(user, user.getInstance().getGameMaster().equals(user));
     }
     public UserData(GameUser user, boolean isGameMaster) {
         this.score = user.getCurrentScore();
