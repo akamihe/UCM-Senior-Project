@@ -19,6 +19,7 @@ public class GameBroker implements Runnable{
         //HangMan.class,
         Sudoku.class,
         //TicTacToe.class,
+        Pictionary.class,
     };
 
     public static Map<String, GameBroker> activeGames = Collections.synchronizedMap(new HashMap<>());
@@ -55,10 +56,10 @@ public class GameBroker implements Runnable{
     public synchronized void beginGame(ActiveGames active) {
         List<Class<Game>> games = Arrays.stream(loadableGames)
                 .filter(e -> active.getList().contains(e.getSimpleName())).toList();
-        for(int i = 0; i < Math.max(2, games.size()); i ++) {
-            int rnd = new Random().nextInt(loadableGames.length); //todo, allow selcetion of what games to play.
+        for(int i = 0; i < Math.max(3, games.size()); i ++) {
+            int rnd = new Random().nextInt(games.size()); //todo, allow selcetion of what games to play.
             try {
-                this.nextGames.add(loadableGames[rnd].getDeclaredConstructor().newInstance());
+                this.nextGames.add(games.get(rnd).getDeclaredConstructor().newInstance());
                 //this.currentGame = (Game);
                 //this.currentGame.init(this.users);
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException |

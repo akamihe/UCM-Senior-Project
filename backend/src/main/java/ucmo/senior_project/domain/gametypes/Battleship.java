@@ -35,7 +35,7 @@ public class Battleship implements Game {
 
     private boolean finished = false;
 
-    public static long time;
+    private long time;
 
     public Battleship() {
         this.playerGameData = new HashMap<>();

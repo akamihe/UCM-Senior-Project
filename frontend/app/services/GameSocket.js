@@ -15,6 +15,7 @@ export default class GameSocket {
         this.userCode = code;
         this.gameInstance = null;
         this.onDisconnect = null;
+        this.canvasData = [];
         this.activeSubscriptions = new Map(); //map
         var app_url = process.env.app_url || (window.location.host).replace(DEFAULT_SELF_PORT, DEFAULT_EXT_PORT);
         this.socket = new Client({
@@ -54,7 +55,7 @@ export default class GameSocket {
             body: JSON.stringify(data)
         });
     }
-    subscribe(url, callback, interval=true) {
+    subscribe(url, callback, interval=true, subscriberDataCallback=function(){return null}, time=1000) {
         if(this.activeSubscriptions.has(url)) {
             console.log("Function subscription called twice, check your code!!!");
             return;
@@ -64,8 +65,8 @@ export default class GameSocket {
             var urlCpy = url;
             var _this = this;
             intervalObject = setInterval(function(){
-                _this.sendMessageToServer(urlCpy, {});
-            }, 1000)
+                _this.sendMessageToServer(urlCpy, subscriberDataCallback());
+            }, time)
         }
         this.activeSubscriptions.set(url, intervalObject);
         url += '/' + this.userCode;
@@ -85,10 +86,12 @@ export default class GameSocket {
         this.socket.unsubscribe(url);
     }
     clearSubscriptions() {
+        this.subscribeBonusData = null;
         for(var i = 0; i < this.activeSubscriptions.length; i++) {
             this.unsubscribe(this.activeSubscriptions[i]);
         }
         this.activeSubscriptions = new Map();
+        this.canvasData = [];
     }
     sendWakeMessageToServer(data) {
         this.sendMessageToServer('/broker/wake', data);
@@ -129,6 +132,18 @@ export default class GameSocket {
         this.sendMessageToServer("/game/battleship/setValue", {x:x, y:y});
     }
 
+    //pictonary related
+    pictionaryUpdateCanvasData(canvasData) {
+        this.canvasData = canvasData;
+    }
+    pictionaryMakeGuess(text) {
+        this.sendMessageToServer("/game/pictionary/guess", {text:text});
+    }
+
+    pictionarySubscribe(callback) {
+        this.subscribe("/game/pictionary/listen", callback);
+        this.subscribe("/game/pictionary/UpdateCanvasData",function() {}, true,  function() {return this.canvasData;}.bind(this), 1000);
+    }
 
 
     static getGameSocketInstance() { 
