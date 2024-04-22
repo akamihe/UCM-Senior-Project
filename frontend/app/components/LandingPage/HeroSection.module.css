@@ -1,0 +1,173 @@
+.HeroMainSection {
+  /* background-color: red; */
+  /* height: 100vh; */
+  background-image: url("../../../public/Backgroundpic.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  color: white;
+  position: relative;
+  background-attachment: fixed;
+}
+.Navbar {
+  display: flex;
+  width: 90%;
+  padding: 1rem 0;
+  justify-content: space-between;
+  margin: auto;
+  position: relative;
+  z-index: 2;
+}
+.HeroMainSection::before {
+  /* Create a pseudo-element to overlay */
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(
+    0,
+    0,
+    0,
+    0.5
+  ); /* Adjust the alpha value to change darkness */
+}
+.Nav1 {
+  display: flex;
+  justify-content: center;
+}
+.navbardiv {
+  width: 100%;
+  position: sticky;
+  top: 0;
+}
+.LogoPic {
+  width: 7rem;
+}
+.Nav2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+}
+
+.JointheGameBtn {
+  background-color: transparent;
+  color: white;
+  padding: 9px;
+  font-size: 16px;
+  border: none;
+  font-weight: 700;
+}
+.JointheGameBtn:hover {
+  color: #39b54a;
+  cursor: pointer;
+}
+
+.WaitingForGameBtn {
+  background-color: transparent;
+  color: white;
+  font-weight: 700;
+  padding: 9px;
+  font-size: 16px;
+  border: none;
+}
+.WaitingForGameBtn:hover {
+  color: #39b54a;
+  cursor: pointer;
+}
+.Nav3 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2.5rem;
+}
+.LoginBtn {
+  background-color: transparent;
+  color: white;
+  padding: 9px 15px;
+  border: 1px solid;
+  font-size: 16px;
+  transition: 250ms ease-in;
+}
+.LoginBtn:hover {
+  background-color: #39b54a;
+  color: #fff;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+.SignUpBtn {
+  background-color: transparent;
+  color: white;
+  padding: 9px 15px;
+  border: 1px solid;
+  font-size: 16px;
+  transition: 250ms;
+}
+.SignUpBtn:hover {
+  background-color: #39b54a;
+  color: #fff;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.HeroData {
+  position: relative;
+  z-index: 2;
+  width: 90%;
+  margin: auto;
+}
+.HeroDataInner {
+  width: 55%;
+}
+.HeroDataP {
+  margin-top: 10rem;
+  color: grey;
+  font-size: 24px;
+  font-family: "Montserrat", sans-serif;
+}
+.HeroDataH1 {
+  font-family: "Montserrat", sans-serif;
+  font-size: 72px;
+  font-weight: bold;
+}
+.FooterBtnDiv {
+  position: relative;
+  z-index: 2;
+  margin-top: 4rem;
+  height: 100px;
+}
+.FooterBtnInner {
+  width: 25%;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+}
+.FooterBtn1 {
+  background-color: transparent;
+  color: white;
+  padding: 10px 30px;
+  border: 2px solid;
+  font-size: 16px;
+  transition: 250ms ease-in;
+}
+.FooterBtn1:hover {
+  background-color: #39b54a;
+  color: #fff;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+.ScrollDown {
+  position: absolute;
+  color: #39b54a;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  right: 9%;
+  font-family: "Montserrat", sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  top: 4%;
+}
