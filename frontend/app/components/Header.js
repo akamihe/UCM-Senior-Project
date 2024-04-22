@@ -44,9 +44,6 @@ function Options() {
             <Link to="/game/join" className="navbar-brand">
               Join Game
             </Link>
-            <Link to="/waiting-room" className="navbar-brand">
-              Waiting Room
-            </Link>
           </div>
         </Nav>
       </>
