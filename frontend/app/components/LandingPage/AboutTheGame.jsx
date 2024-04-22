@@ -16,17 +16,17 @@ export default function AboutTheGame() {
           whileInView="visible"
           transition={{ duration: 0.5, delay: 0.25 }}
         >
-          <p className={styles.AboutGameHeading}>About the Super Game</p>
+          <p className={styles.AboutGameHeading}>About the Paper Game</p>
         </motion.div>
         <div className={styles.hr}>
           <hr />
         </div>
         <p className={styles.AbooutTheGame1stP}>
-          Welcome to super game, your gateway to an extraordinary gaming
+          Welcome to Paper Game, your gateway to an extraordinary gaming
           universe! As part of our senior project, we've crafted a
           groundbreaking gaming experience that combines classic favorites like
           Hangman, Battleship, Tic-Tac-Toe, and Sudoku into one seamless
-          adventure. <br /> <br /> Designed with innovation in mind, super game
+          adventure. <br /> <br /> Designed with innovation in mind, paper game
           offers a unique multiplayer platform where players can log in, create
           a personalized game room, and generate a unique room code to share
           with friends. Invite your pals to join your gaming realm and embark on
@@ -36,7 +36,7 @@ export default function AboutTheGame() {
         <p className={styles.AbooutTheGame2ndP}>
           Whether you're strategizing in Battleship, guessing letters in
           Hangman, placing your marks in Tic-Tac-Toe, or solving puzzles in
-          Sudoku, super game promises endless excitement and camaraderie. Join
+          Sudoku, paper game promises endless excitement and camaraderie. Join
           us on this epic gaming journey and be a part of the FutureQuest
           community. Ready to level up your gaming experience?
         </p>

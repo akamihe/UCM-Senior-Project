@@ -26,12 +26,7 @@ export default function HeroSection() {
             <Link to={"/game/join"}>
               <button className={sytles.JointheGameBtn}>Join the Game</button>
             </Link>
-            <Link to={"/waiting-room"}>
-              {" "}
-              <button className={sytles.WaitingForGameBtn}>
-                Waiting for Game
-              </button>{" "}
-            </Link>
+            
           </div>
           <div className={sytles.Nav3}>
             <Link to={"/login"}>
@@ -54,7 +49,7 @@ export default function HeroSection() {
       >
         <div className={sytles.HeroData}>
           <div className={sytles.HeroDataInner}>
-            <p className={sytles.HeroDataP}>Welcom to Super Game</p>
+            <p className={sytles.HeroDataP}>Welcome to Paper Game</p>
             <h1 className={sytles.HeroDataH1}>
               <span style={{ color: "#39B54A" }}> Dive </span> into a world
               filled with games and challenges!
@@ -63,7 +58,7 @@ export default function HeroSection() {
         </div>
         <div className={sytles.FooterBtnDiv}>
           <div className={sytles.FooterBtnInner}>
-            <Link to={"/waiting-room"}>
+            <Link to={"/Login"}>
               <button className={sytles.FooterBtn1}>Start a Game</button>{" "}
             </Link>
           </div>
