@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
 const style = {
-  container: { display: "flex", flexDirection: "column", height: "100%", padding: 16 },
+  container: { display: "flex", flexDirection: "column", padding: 16, height:"90vh" },
   contentContainer: {
     display: "flex", 
     flexDirection: "column", 
@@ -66,7 +66,7 @@ export default function WaitingRoom() {
   const isHost = true;
 
   return (
-    <div style={style.container}>
+    <div style={style.container} className="height">
       <div style={style.contentContainer}>
         <div style={style.playersCodeContainer}>
           <div style={style.playersSection}>

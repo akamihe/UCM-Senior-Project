@@ -1,0 +1,56 @@
+.AbooutGameMainDiv {
+  margin: auto;
+  background-color: #39b54a;
+}
+.AbooutGameInnerDiv {
+  width: 70%;
+  margin: auto;
+  /* border: 2px solid black; */
+  padding: 6rem 0;
+  font-family: "Montserrat", sans-serif;
+}
+.AboutGameHeading {
+  text-align: center;
+  color: white;
+  font-size: 60px;
+  padding-bottom: 2.5rem;
+  font-weight: bold;
+}
+.AbooutTheGame1stP {
+  font-size: 20px;
+  /* color: white; */
+  text-align: center;
+  padding-top: 2.5rem;
+}
+.AbooutTheGame2ndP {
+  font-size: 20px;
+  /* color: white; */
+  text-align: center;
+  padding: 1rem 0;
+}
+.AbooutTheGame3rdP {
+  font-size: 16px;
+  color: white;
+  text-align: center;
+  padding: 1rem 2rem;
+  border-radius: 5px;
+  border: 1px solid black;
+  background: black;
+  width: fit-content;
+  margin: auto;
+  font-weight: bold;
+  margin-top: 1rem;
+  cursor: pointer;
+  transition: 200ms ease-in;
+}
+.AbooutTheGame3rdP:hover {
+  background-color: #222;
+  color: white;
+}
+.AbooutTheGame3rdP:active {
+  background-color: #333;
+}
+.hr {
+  width: 80%;
+  margin: auto;
+}
