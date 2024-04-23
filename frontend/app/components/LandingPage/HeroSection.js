@@ -20,20 +20,18 @@ export default function HeroSection() {
       <div style={{ width: "100%" }} className={sytles.navbardiv}>
         <div className={sytles.Navbar}>
           <div className={sytles.Nav1}>
-            <img className={sytles.LogoPic} src="1.png" />
+            <img className={sytles.LogoPic} src="2.png" />
           </div>
-          <div className={sytles.Nav2}>
+          {/* <div className={sytles.Nav2}></div> */}
+          <div className={sytles.Nav3}>
             <Link to={"/game/join"}>
               <button className={sytles.JointheGameBtn}>Join the Game</button>
             </Link>
-            
-          </div>
-          <div className={sytles.Nav3}>
             <Link to={"/login"}>
               <button className={sytles.LoginBtn}>Login</button>{" "}
             </Link>
             <Link to={"/join"}>
-              <button className={sytles.SignUpBtn}>SignUp</button>{" "}
+              <button className={sytles.SignUpBtn}>Sign Up</button>{" "}
             </Link>
           </div>
         </div>

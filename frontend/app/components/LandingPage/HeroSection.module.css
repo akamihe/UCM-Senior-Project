@@ -55,26 +55,30 @@
 .JointheGameBtn {
   background-color: transparent;
   color: white;
-  padding: 9px;
+  padding: 9px 15px;
+  border: 1px solid;
   font-size: 16px;
-  border: none;
-  font-weight: 700;
+  transition: 250ms ease-in;
 }
 .JointheGameBtn:hover {
-  color: #39b54a;
+  background-color: #39b54a;
+  color: #fff;
+  border: 1px solid transparent;
   cursor: pointer;
 }
 
 .WaitingForGameBtn {
   background-color: transparent;
   color: white;
-  font-weight: 700;
-  padding: 9px;
+  padding: 9px 15px;
+  border: 1px solid;
   font-size: 16px;
-  border: none;
+  transition: 250ms ease-in;
 }
 .WaitingForGameBtn:hover {
-  color: #39b54a;
+  background-color: #39b54a;
+  color: #fff;
+  border: 1px solid transparent;
   cursor: pointer;
 }
 .Nav3 {

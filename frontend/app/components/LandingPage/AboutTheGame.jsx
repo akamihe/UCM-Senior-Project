@@ -25,7 +25,7 @@ export default function AboutTheGame() {
           Welcome to Paper Game, your gateway to an extraordinary gaming
           universe! As part of our senior project, we've crafted a
           groundbreaking gaming experience that combines classic favorites like
-          Hangman, Battleship, Tic-Tac-Toe, and Sudoku into one seamless
+          Battleship, Pictionary, and Sudoku into one seamless
           adventure. <br /> <br /> Designed with innovation in mind, paper game
           offers a unique multiplayer platform where players can log in, create
           a personalized game room, and generate a unique room code to share
@@ -34,10 +34,10 @@ export default function AboutTheGame() {
         </p>
         <br />
         <p className={styles.AbooutTheGame2ndP}>
-          Whether you're strategizing in Battleship, guessing letters in
-          Hangman, placing your marks in Tic-Tac-Toe, or solving puzzles in
+          Whether you're strategizing in Battleship, challenging your friends in Pictionary
+          or solving puzzles in
           Sudoku, paper game promises endless excitement and camaraderie. Join
-          us on this epic gaming journey and be a part of the FutureQuest
+          us on this epic gaming journey and be a part of the Paper game
           community. Ready to level up your gaming experience?
         </p>
         <Link to={"/game/join"}>
