@@ -8,7 +8,7 @@ function Options() {
     return (
       <>
         <Nav className="flex col-12">
-        <img style={{width:"7rem"}} src="1.png" />
+        <img style={{width:"7rem"}} src="2.png" />
           <Link
             to="/debug"
             onClick={() => (window.location.href = "/debug")}
@@ -32,7 +32,7 @@ function Options() {
       <>
         <Nav className="flex justify-between w-[100%] items-center">
           <Link to="/">
-            <img style={{ width: "7rem" }} src="https://i.ibb.co/6wCdKZ2/1.png" />
+            <img style={{ width: "7rem" }} src="/2.png" />
           </Link>
           <div>
             <Link to="/join" className="navbar-brand">
