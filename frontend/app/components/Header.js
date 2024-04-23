@@ -8,19 +8,13 @@ function Options() {
     return (
       <>
         <Nav className="flex col-12">
-        <img style={{width:"7rem"}} src="2.png" />
-          <Link
-            to="/debug"
-            onClick={() => (window.location.href = "/debug")}
-            className="navbar-brand"
-          >
-            TODO, ADD LINK HERE
-          </Link>
+        <img style={{width:"7rem"}} src="/2.png" />
+          
           <Link
             to="#"
             onClick={() => AuthService.logout()}
-            className="nav-link"
-            style={{ marginLeft: "auto" }}
+            className="nav-link navbar-brand"
+            style={{ marginLeft: "auto", marginTop:"15px"}}
           >
             Logout
           </Link>
