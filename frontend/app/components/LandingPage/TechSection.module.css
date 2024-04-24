@@ -1,0 +1,63 @@
+.TechSectionMainDiv {
+  background-color: #212121;
+  padding: 4rem 0;
+}
+.TechSectionInnerDiv {
+  width: 80%;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  padding-top: 5rem;
+}
+.TechSectionInnerDiv h4 {
+  color: white;
+  font-size: 24px;
+  margin-bottom: 1rem;
+  text-decoration: none !important;
+  width: fit-content;
+}
+.TechSectionInnerDiv ul li {
+  color: white;
+  margin-left: 1rem;
+  list-style: disc !important;
+}
+.TechSectionInnerDiv ul li::marker {
+    color: #39b54a !important;
+}
+.TechSectionInnerDiv ul {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.Section1 h1 {
+  width: 60%;
+  color: #39b54a;
+  font-weight: 700;
+  font-size: 42px;
+  margin-bottom: 2rem;
+}
+.imagePattern {
+  width: 100%;
+  /* animation: moveout 5s ease-in infinite; */
+}
+@keyframes moveout {
+  0% {
+    transform: translateY(-10px);
+  }
+  50% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-10px);
+  }
+}
+.Icons {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 1rem;
+  gap: 1rem;
+}
+.Image {
+  width: 72px;
+  height: 72px;
+}

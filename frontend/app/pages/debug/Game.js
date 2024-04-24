@@ -6,7 +6,7 @@ import DotsAndBoxes from "./DotsAndBoxes";
 import Sudoku from "./Sudoku";
 
 const style = {
-  container: { display: "flex", flexDirection: "column", justifyContent: "center", height: "100%" },
+  container: { display: "flex", flexDirection: "column", justifyContent: "center" },
   gameSection: { 
     display: "flex", 
     overflow: "hidden",
@@ -187,7 +187,7 @@ const Game = () => {
   }
 
   return (
-    <div style={style.container}>
+    <div style={style.container} className={"h-[calc(100vh-72px)]"}>
       {isGameActive ? (
         <>
           <div style={style.gameSection}>{renderGame(game)}</div>

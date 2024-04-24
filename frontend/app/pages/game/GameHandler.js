@@ -87,7 +87,7 @@ function gameFinished(gameState, isDone) {
     </div>
 }
 
-function GameHandler() {
+function GameHandlerProxied() {
     const [socket] = useState(GameSocket.getGameSocketInstance());
     const [gameState, setGameState] = useState({});
     const hasLoaded = useRef(false);
@@ -125,6 +125,11 @@ function GameHandler() {
         default:
             return <GameWaitingRoom socket={socket} gameState={gameState}/>
     }
+}
+function GameHandler() {
+    return <div style={{ paddingTop: "60px" }}>
+        {GameHandlerProxied()}
+    </div>
 }
 
 export default GameHandler;
