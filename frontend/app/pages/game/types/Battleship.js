@@ -46,7 +46,7 @@ const style = {
     textAlign: "center", 
     marginTop: 16, 
     fontStyle: "italic",
-    height: 22
+    height: 62
   },
   shotResultText: shotResult => ({
     fontWeight: "bold", 
@@ -57,7 +57,7 @@ const style = {
     lineHeight: 1, 
     fontStyle: "italic",
     visibility: shotResult ? "visible" : "hidden",
-    heigth: 22
+    heigth: 62
   }),
   shipSegmentSvg: rotateDeg => ({ transform: `translate(-0.5px) rotate(${rotateDeg}deg) scale(1, 1.2)` })
 };
